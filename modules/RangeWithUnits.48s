@@ -1,0 +1,140 @@
+@@ Module for unit aware range commands.
+@@ At the time of writing, 2025-09-03, the db48x range commands are not unit aware.
+@@ This is not production ready but a db48x rpl programming exercise.
+@@ Inspired by https://github.com/c3d/db48x/issues/1522
+
+'RangeWithUnits' CreateDirectory
+RangeWithUnits
+
+
+«
+	@@ Create a range from an a and b value with units, given a range command.
+	@@ The unit of the a value is ignored.
+	@@ The unit of the b value is used as the unit for the range.
+	@@
+	@@ (a_aUnit b_bUnit RangeCommand -- <a b range>_rangeUnit)
+
+	→ RangeCommand
+        «
+		@ Ignore aUnit, remove it.
+		Swap Object→ Drop Swap
+		@ (-- a b_bUnit)
+
+		@ Preserve bUnit. Later attach it to the range.
+		1 Over →Unit UnRot
+		@ (-- 1_bUnit a b_bUnit)
+
+		@ Remove bUnit.
+		Object→ Drop
+		@ (-- 1_bUnit a b)
+
+		@ Create the range. Attach the unit.
+		RangeCommand Run
+		Swap →Unit
+		@ (-- <a b range>_rangeUnit)
+	»
+»
+'RangeWithUnitsWrapper' Store	
+
+
+@@ With the above wrapper, the different range commands are easily created.
+@@ Providing one as an example.
+«
+	'→σRange' RangeWithUnitsWrapper
+»
+'→σRangeWithUnits' Store
+
+
+«
+	@@ Break up a range with units to its a and b value, with units.
+	@@ (<a b range>_rangeUnit -- a_aUnit b_bUnit)
+
+	@ Preserve the rangeUnit. Later attach it to a and b.
+	1 Over →Unit Swap
+	@ (-- 1_rangeUnit <a b range>_rangeUnit)
+
+	@ Remove the rangeUnit. Break up the range.
+	Object→ Drop Object→
+	@ (-- 1_rangeUnit a b)
+
+	@ Attach unit to b.
+	Pick3 →Unit
+	@ (-- 1_rangeUnit a b_bUnit)
+	
+	@ Attach unit to a.
+	UnRot Swap →Unit Swap
+	@ (-- a_aUnit b_bUnit)
+»
+'RangeWithUnits→' Store
+
+
+«
+	@@ Scientific round an uncertain number with a unit.
+	@@ (<mean>±σ<standardDeviation>_unit -- <mean rounded>±σ<standardDeviation rounded>_unit)
+
+	@ Breakup the uncertain number.
+	RangeWithUnits→
+	@ (-- mean_unit standardDeviation_unit)
+	
+	@ Round the standardDeviation.
+	-2 round
+	@ Round the mean accordingly.
+	dup unrot StandardRound Swap
+	@ (--  <mean rounded>_unit <standardDeviation rounded>_unit)
+
+	@ Rebuild the uncertain number.
+	'→σRange' RangeWithUnitsWrapper
+	@ (--  <mean rounded>±σ<standardDeviation rounded>_unit)
+»
+'ScientificRoundUncertainNumberWithUnits' Store
+
+
+@@ Provide easy access with a custom menu.
+@@ Note the difference in "→σRange" and the 3 before it.
+@@ That makes the "→σRange" button work even when in programming mode.
+@@ The 3 before it get run immediately even in programming mode.
+{
+	{ "→Range" « '→Range' RangeWithUnitsWrapper » }
+	{ "→∆Range" « '→∆Range' RangeWithUnitsWrapper » }
+	{ "→%Range" « '→%Range' RangeWithUnitsWrapper » }
+	{ "→σRange" →σRangeWithUnits }
+	{ "Range→" RangeWithUnits→ }
+	{ "SciRnd" ScientificRoundUncertainNumberWithUnits }
+}
+'CustomMenu' STO
+
+
+@ Announce test.
+"Test result ... (expect True)"
+@ Start Ok.
+True
+
+2._m 10._m
+'→Range' RangeWithUnitsWrapper
+2.…10. m =
+
+and
+
+2.…10. m
+RangeWithUnits→
+10. m =
+Swap 2. m = and
+
+and
+
+@ See https://github.com/c3d/db48x/issues/1515 for chosing a negative mean.
+-5.362485 g 0.111255 g
+→σRangeWithUnits
+-5.362485±σ0.111255 g =
+
+and
+
+-74.94035±σ4.95305 s
+ScientificRoundUncertainNumberWithUnits
+-74.9±σ5. s =
+
+@ Final compound test result.
+and
+
+
+UpDirectory
