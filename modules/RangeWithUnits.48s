@@ -83,7 +83,7 @@ RangeWithUnits
 	@ (--  <mean rounded>_unit <standardDeviation rounded>_unit)
 
 	@ Rebuild the uncertain number.
-	'→σRange' RangeWithUnitsWrapper
+	→σRangeWithUnits
 	@ (--  <mean rounded>±σ<standardDeviation rounded>_unit)
 »
 'ScientificRoundUncertainNumberWithUnits' Store
@@ -133,7 +133,7 @@ and
 ScientificRoundUncertainNumberWithUnits
 -74.9±σ5. s =
 
-@ Final compound test result.
+@ Final combined test result.
 and
 
 
