@@ -104,37 +104,44 @@ RangeWithUnits
 'CustomMenu' STO
 
 
-@ Announce test.
-"Test result ... (expect True)"
-@ Start Ok.
-True
+«
+	@@ Present a test result.
+	@@ (TestCondition TestDescription -- TestResult)
+
+	if Swap then " Success" else " FAIL" end
+	+
+»
+'TestResult' Store
+
 
 2._m 10._m
 '→Range' RangeWithUnitsWrapper
-2.…10. m =
 
-and
+2.…10. m =
+"→RangeWithUnits" TestResult
+
 
 2.…10. m
 RangeWithUnits→
+
 10. m =
 Swap 2. m = and
+"RangeWithUnits→" TestResult
 
-and
 
 @ See https://github.com/c3d/db48x/issues/1515 for chosing a negative mean.
 -5.362485 g 0.111255 g
 →σRangeWithUnits
--5.362485±σ0.111255 g =
 
-and
+-5.362485±σ0.111255 g =
+"→σRangeWithUnits" TestResult
+
 
 -74.94035±σ4.95305 s
 ScientificRoundUncertainNumberWithUnits
--74.9±σ5. s =
 
-@ Final combined test result.
-and
+-74.9±σ5. s =
+"ScientificRoundUncertainNumberWithUnits" TestResult
 
 
 UpDirectory
