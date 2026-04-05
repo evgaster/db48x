@@ -1,0 +1,54 @@
+«
+
+«  @ Program RhoijRdm to generate the random correlation matrix 'ρij' which is to be called after random seed initialisation
+	«
+		-1. 1. Random
+	»
+	→ RhoToss
+	«
+		'Nbvar' Recall Duplicate
+		{ } + + 0. Con 'Nbvar'
+		Recall 2
+		for i
+			i 1 - 1
+			for j
+				{ } i + j + RhoToss
+				Put -1
+			step
+			-1
+		step
+		Duplicate 'ρij' Store
+	»
+» 'RhoijRdm' Sto
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+@ CASE#1 + CASE#2
+{
+	'x15·x14·x13·x12·x11·x10·x9·x8·x7·x6·x5·x4·x3·x2·x1'
+	'x15²·x14³·ln(x13)·exp(x12/x11)·((x10·x9)↑-2)·((x8/x7)↑-3)·tgamma(x6)·(x5·x4·x3)³·(x2/x1)²'
+}
+
+{ x15 x14 x13 x12 x11 x10 x9 x8 x7 x6 x5 x4 x3 x2 x1 }
+ReverseList
+
+{ 2.5±σ0.25 1.5±σ0.15 3.0±σ0.3 4.5±σ0.7 2.1±σ0.3 8.1±σ0.2 6.2±σ0.3 0.3±σ0.01 1.5±σ0.5 1.0±σ0.1 2.0±σ0.2 1.0±σ0.1 2.0±σ0.2 2.5±σ0.5 2.0±σ0.2 }
+ReverseList
+
+Nbvar=15 1 exp 1e14 * IP →Int Rdz RhoijRdm
+Duplicate Transpose +
+Duplicate Size IdentityMatrix +
+Swap Drop
+
+«
+	PropagateUncertainty
+	SquareRoot
+»
+TimedEval
+
+@ Combined takes 6470 ms (with the simulator on my Fedora workstation).
+
+
+»

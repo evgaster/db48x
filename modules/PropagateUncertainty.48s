@@ -1,0 +1,354 @@
+«
+
+
+@@ https://en.wikipedia.org/wiki/Propagation_of_uncertainty
+
+@@ Zip 2 lists.
+@@ ( l1 l2 -- l3 )
+@@
+@@ l3 will have the elements of l1 and l2 alternately.
+@@ Note: unlike Python zip the resulting list is flat.
+«
+	→ l1 l2
+	«
+		{}
+
+		1  l1 size
+		For i
+			l1 i get +
+			l2 i get +
+		Next
+	»
+»
+zipper Store
+
+
+@@ DB48X doesn't provide the DIAG→ command.
+@@ This is an alternative implementation.
+
+@@ Transform a vector to a diagonal matrix.
+@@ ( vector -- matrix )
+@@ 
+«
+	→ v
+	«
+		@ Initialise the output matrix.
+		v Size Head IdentityMatrix
+
+		@ Copy each vector element to the corresponding diagonal position.
+		1  v Size Head
+		For i
+		    {}  i +  i +
+		    v  i  Get
+		    Put
+		Next
+	»
+»
+DiagonalFrom Store
+
+
+@@ Generate a size n correlation matrix with random values.
+@@ ( n -- matrix)
+«
+	@ A generator of random correlation coefficient values.
+	«
+		-1.0 1.0 Random
+	»
+
+	→ n g
+	«
+		{} n + n + 0 ConstantArray
+		
+		@ Run only over the part below the diagonal.
+		2  n
+		For row
+			1  row 1 -
+			For column
+				{} row +  column +
+				g Put
+			Next
+		Next
+
+		@ Make it symmetric.
+		Duplicate  Transpose +
+		@ Fill in the diagonal.
+		n IdentityMatrix +
+	»
+»
+GenerateRandomCorrelationMatrix Store
+
+
+@@ Calculate the "numerical derivative".
+@@ ( function { x v } -- df/dx_approximation )
+@@
+@@ The { x v } parameter is a list of a single function parameter with its value.
+@@ 
+@@ See: https://en.wikipedia.org/wiki/Numerical_differentiation: five point midpoint approximation.
+@@ The differentation approximation parameter h is here not an absolute small value but = x * d.
+@@ Where d is a small value.
+@@
+@@ Note that we do not evaluate for x = v. v is not used at all.
+@@ The calling command gets an expression back, that still needs to be evaluated.
+@@ In that sense this derivative is not a completely numerical approximation.
+@@ It is an algebraic approximation.
+@@
+@@ Example:
+@@
+@@ 'tgamma(x²)'
+@@ { x 1 }
+@@ NumericalDerivative
+@@
+@@ Expect: '((Gamma((X·1.00000 0001)²)-Gamma((X·0.99999 9999)²))·8+(Gamma((X·0.99999 9998)²)-Gamma((X·1.00000 0002)²)))÷(12·(X·0.00000 0001))'
+«
+	@@ Extra local variable(s).
+	@@ ( -- d emptyProgram)
+	1.0e-9
+	« »
+
+	→ f xv d generateOnePoint
+	«
+		@@ Generate one point.
+		@@ ( w -- f((x * (1 + w * d))) )
+		@@
+		@@ In f(x) replace x with (x * (1 + w * d)). 
+		«
+			→ w
+			«
+				@@ ( -- f(x) )
+				f
+				@@ ( f(x) -- f(x) { x v } valuePosition )
+				xv 2
+				@@ ( ... -- x )
+				xv 1 Get
+				@@ ( x -- 'x * (1 + w * d)' )
+				1 w d * + *
+				@@ ( { x v } valuePostion 'x * (1 + w * d)' ) -- { x 'x * (1 + w * d)' } )
+				Put
+				@@ ( f(x) -- f((x * (1 + w * d))) )
+				Where
+			»
+		»
+		'generateOnePoint' Store
+
+	@@ -f(x+2h) + 8 * f(x+h) -8 * f(x-h) + f(x-2h) =
+	@@ (f(x+h) - f(x-h)) * 8 + (f(x-2h) - f(x+2h))
+	+1 generateOnePoint
+	-1 generateOnePoint
+	-
+	8 *
+	-2 generateOnePoint
+	+2 generateOnePoint
+	-
+	+
+	@@ Divide by 12h. Recall that h = x * d.
+	@@ Note that we are dividing by (a multiple of) x.
+	@@ That could lead to dividing by 0, when x = 0.
+	@@ But since we do not evaluate for p = x = v,
+	@@ no harm will be done here.
+	@@ It is up to the calling command to deal with x = 0.
+	12
+	@ h = p * d
+	xv 1 Get  d * *
+	/
+	»
+»
+NumericalDerivative Store
+
+
+@@ Calculate the partial derivative of a function: df/dx[i](v[i]).
+@@ ( function listOfParametersAndValues i -- partialDerivative )
+«
+	@@ Extra local variable(s).
+	@@ ( i -- i*2 i*2-1 )
+	2 *
+	dup 1 -
+
+	→ f pv parameterValueIndex parameterIndex 
+	«
+		@@ Prepare for later.
+		@@ ( -- { x[i] v[i] } )
+		pv  parameterIndex  Get
+		pv  parameterValueIndex  Get
+		2 ToList
+
+		@@ Keep all x[*] but x[i] constant.
+		@@ Evaluate f for all x[*] except x[i].
+		@@ ( -- fPartialEvaluated )
+		f
+		@@ Take x[i] out of pv, by changing it.
+		pv  parameterIndex  "~dummy~"  Put
+		@@ Substitute v[*] for x[*] except for x[i] and evaluate as far as possible.	
+		Where  Evaluate
+
+		@@ Differentiate the partial evaluated function with respect to x[i]. 
+		IfErr
+			@@ ( fPartialEvaluated -- fPartialEvaluated x[i] )
+			pv  parameterIndex  Get
+			@@ ( fPartialEvaluated x[i] -- d/dx[i]_fPartialEvaluated )
+			Derivative
+		Then
+			@@ Oops! Unknown derivative.
+			@@ ( fPartialEvaluated x[i] -- fPartialEvaluated { x[i] v[i] } ) 
+			Drop
+			Over
+			@@ ( fPartialEvaluated { x[i] v[i] } -- df/dx[i]_approximation )
+			NumericalDerivative
+		End
+
+		@@ Evaluate at x[i] = v[i].
+		@@ ( { x[i] v[i] }  df/dx[i] -- df/dx[i](x[i] = v[i]) )
+		Swap			
+		@@ Evaluate the "partial derivative" for x[i] = v[i].
+		Where  Evaluate
+	»
+»
+PartialDerivative Store
+
+
+@@ Calculate the gradient of a function.
+@@ ( function listOfParametersAndValues -- gradient )
+«
+	→ f pv
+	«
+		@@ For each of the parameters ...
+		1  pv Size 2 /
+		For i
+			f pv i  PartialDerivative
+		Next
+
+		@@ Combine the partial derivatives.
+		pv Size 2 /
+		ToArray
+	»
+»
+Gradient Store
+
+
+@@ Calculate the jacobian of a list of functions.
+@@ ( ListOfFunctions listOfParametersAndValues -- Jacobian )
+«
+	→ f pv
+	«
+		@@ For each of the functions ...
+		1  f Size
+		For i
+			f  i  Get
+			pv  Gradient
+		Next
+
+		@@ Combine the gradients.
+		f Size
+		RowsToMatrix
+	»
+»
+Jacobian Store
+
+
+@@ Calculate the covariance matrix for:
+@@  a list of functions of
+@@  a list of parameters and values and
+@@  ther correlation matrix of the parameters.
+@@
+@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- covarianceMatrix )
+@@
+@@ The list of functions is a list of (algebraic) expressions.
+@@  e.g. { 'a + b + c' 'a * (b + c)' }
+@@
+@@ The list of parameters is a list of symbols.
+@@  e.g. { a b c } 
+@@
+@@ The list of values is a list of uncertain numbers.
+@@  e.g. { 10±σ1 20±σ2 30±σ3 }
+@@
+@@ The values should not have units.
+@@
+@@ The order of the rows and coloms in the correlation matrix
+@@  and the order of the lists of parameters and values should match.
+@@
+@@ The correlation matrix must be completely filled,
+@@  not just the upper or lower triangle.
+@@
+«
+	@@ Extra local variables
+	{}
+
+	→ f p v R u
+	«
+		@@ Separate the uncertainties.
+		v
+		« Object→ Swap Drop »
+		Map
+		'u' Store
+
+		@@ Separate the values.
+		v
+		« Object→ Drop »
+		Map
+		'v' Store
+
+		@ Calculate the Jacobian for the functions at the values of the parameters.
+		f
+		p v zipper
+		Jacobian
+		
+		@ Transform the uncertainties to matrix form.
+		u FromList ToArray DiagonalFrom
+
+		@ Calculate the covariance matrix: CV = u * R * transpose(u)
+		@ u is diagonal, so no transpose needed.
+		R over * *
+
+		@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
+		Over Transpose * *
+	»
+»
+PropagateUncertainty Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Some samples that you can check with mental arithmetic.
+
+{ 'a + b + c' }
+{ a b c }
+{ 10±σ1 20±σ2 30±σ3 }
+[[ 1 0 0 ]
+ [ 0 1 0 ]
+ [ 0 0 1 ]]
+
+PropagateUncertainty
+SquareRoot
+
+@ Expect sqrt(14) = 3.74165 73867 7
+
+
+@ With correlation between a and b.
+
+{ 'a + b + c' }
+{ a b c }
+{ 10±σ1 20±σ2 30±σ3 }
+[[ 1 1 0 ]
+ [ 1 1 0 ]
+ [ 0 0 1 ]]
+
+PropagateUncertainty
+SquareRoot
+
+@ Expect sqrt(18) = 4.24264 06871 2
+
+
+@ With negative correlation between b and c.
+
+{ 'a + b + c' }
+{ a b c }
+{ 10±σ1 20±σ2 30±σ3 }
+[[  1  0  0 ]
+ [  0  1 -1 ]
+ [  0 -1  1 ]]
+
+PropagateUncertainty
+SquareRoot
+
+@ Expect sqrt(2) = 1.41421 35623 7
+
+
+»
