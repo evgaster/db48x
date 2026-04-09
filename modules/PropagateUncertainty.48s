@@ -1,30 +1,11 @@
 «
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ These first few functions where usefull while developing this.
+@@ They could be removed.
 
-@@ https://en.wikipedia.org/wiki/Propagation_of_uncertainty
-
-@@ Zip 2 lists.
-@@ ( l1 l2 -- l3 )
-@@
-@@ l3 will have the elements of l1 and l2 alternately.
-@@ Note: unlike Python zip the resulting list is flat.
-«
-	→ l1 l2
-	«
-		{}
-
-		1  l1 size
-		For i
-			l1 i get +
-			l2 i get +
-		Next
-	»
-»
-zipper Store
-
-
-@@ DB48X doesn't provide the DIAG→ command.
-@@ This is an alternative implementation.
+@@ DB48X doesn't (yet) provide the DIAG→ command.
+@@ This is a purpose targeted alternative implementation.
 
 @@ Transform a vector to a diagonal matrix.
 @@ ( vector -- matrix )
@@ -50,7 +31,7 @@ DiagonalFrom Store
 @@ Generate a size n correlation matrix with random values.
 @@ ( n -- matrix)
 «
-	@ A generator of random correlation coefficient values.
+	@@ A generator of random correlation coefficient values.
 	«
 		-1.0 1.0 Random
 	»
@@ -59,7 +40,7 @@ DiagonalFrom Store
 	«
 		{} n + n + 0 ConstantArray
 		
-		@ Run only over the part below the diagonal.
+		@@ Run only over the part below the diagonal.
 		2  n
 		For row
 			1  row 1 -
@@ -69,13 +50,62 @@ DiagonalFrom Store
 			Next
 		Next
 
-		@ Make it symmetric.
+		@@ Make it symmetric.
 		Duplicate  Transpose +
-		@ Fill in the diagonal.
+		@@ Fill in the diagonal.
 		n IdentityMatrix +
 	»
 »
 GenerateRandomCorrelationMatrix Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ The real stuff begins here.
+@@
+@@ For an overview see (or other simular documentation):
+@@ https://en.wikipedia.org/wiki/Propagation_of_uncertainty
+
+
+@@ Break up a range with units to its a and b value, with units.
+@@ (<a b range>_rangeUnit -- a_aUnit b_bUnit)
+«
+        @@ Preserve the rangeUnit. Later attach it to a and b.
+        @@ ( -- 1_rangeUnit <a b range>_rangeUnit )
+        1 Over →Unit Swap
+
+        @@ Remove the rangeUnit. Break up the range.
+        @@ ( -- 1_rangeUnit a b )
+        Object→ Drop Object→
+
+        @@ Attach unit to b.
+        @@ ( -- 1_rangeUnit a b_bUnit )
+        Pick3 →Unit
+        
+        @@ Attach unit to a.
+        @@ ( -- a_aUnit b_bUnit )
+        UnRot Swap →Unit Swap
+»
+RangeWithUnitsFrom Store
+
+
+@@ Zip 2 lists.
+@@ ( l1 l2 -- l3 )
+@@
+@@ l3 will have the elements of l1 and l2 alternately.
+@@ Note: unlike Python zip the resulting list is flat.
+«
+	→ l1 l2
+	«
+		{}
+
+		1  l1 size
+		For i
+			l1 i get +
+			l2 i get +
+		Next
+	»
+»
+zipper Store
 
 
 @@ Calculate the "numerical derivative".
@@ -130,26 +160,27 @@ GenerateRandomCorrelationMatrix Store
 		»
 		'generateOnePoint' Store
 
-	@@ -f(x+2h) + 8 * f(x+h) -8 * f(x-h) + f(x-2h) =
-	@@ (f(x+h) - f(x-h)) * 8 + (f(x-2h) - f(x+2h))
-	+1 generateOnePoint
-	-1 generateOnePoint
-	-
-	8 *
-	-2 generateOnePoint
-	+2 generateOnePoint
-	-
-	+
-	@@ Divide by 12h. Recall that h = x * d.
-	@@ Note that we are dividing by (a multiple of) x.
-	@@ That could lead to dividing by 0, when x = 0.
-	@@ But since we do not evaluate for p = x = v,
-	@@ no harm will be done here.
-	@@ It is up to the calling command to deal with x = 0.
-	12
-	@ h = p * d
-	xv 1 Get  d * *
-	/
+		@@ -f(x+2h) + 8 * f(x+h) -8 * f(x-h) + f(x-2h) =
+		@@ (f(x+h) - f(x-h)) * 8 + (f(x-2h) - f(x+2h))
+		+1 generateOnePoint
+		-1 generateOnePoint
+		-
+		8 *
+		-2 generateOnePoint
+		+2 generateOnePoint
+		-
+		+
+	
+		@@ Divide by 12h. Recall that h = x * d.
+		@@ Note that we are dividing by (a multiple of) x.
+		@@ That could lead to dividing by 0, when x = 0.
+		@@ But since we do not evaluate for p = x = v,
+		@@ no harm will be done here.
+		@@ It is up to the calling command to deal with x = 0.
+		12
+		@ h = p * d
+		xv 1 Get  d * *
+		/
 	»
 »
 NumericalDerivative Store
@@ -244,12 +275,57 @@ Gradient Store
 Jacobian Store
 
 
-@@ Calculate the covariance matrix for:
+@ Construct a covariance matrix.
+@ ( u R -- CV )
+@
+@ u is a list of uncertainties.
+@ R is a correlation matrix.
+«
+	→ u R
+	«
+		@@ Calculate the covariance matrix: CV[i, j] = uu[i, j] * R[i, j].
+		@@ Where uu[i, j] = u[i] * u[j].
+		@@ This is not a 'dot' operation but element multiplication.
+		@@ DB48X does not provide element multiplication for matrices.
+		@@ It does for 1 dimensional arrays.
+
+		@@ Transform u into an (n, 1) matrix.
+		@@ ( -- u )
+		u FromList ToArray 1 ColumnsToMatrix
+		@@ Create uu, the outer product of u with u.
+		@@ ( -- uu )
+		Duplicate Transpose *
+
+		@@ For all i and j: CV[i, j] = uu[i, j] * R[i, j].
+		@@ The uu on the stack will be transformed to CV.
+		
+		@@ ( uu -- uu #rows)
+		Duplicate Size
+		FromList Drop2
+
+		1 Swap
+		For i
+			@@ ( uu -- uu {i} )
+			{} i +
+			@@ ( uu {i} -- uu {i} uu[i, *])
+			Duplicate2 Get
+			@@ ( uu {i} uu[i, *] -- uu {i} uu[i, *] R[i, *] )
+			R 3 Pick Get
+			@@ CV[i, *] = uu[i, *] * R[i, *].
+			@@ ( uu {i} uu[i, *] R[i, *] -- uu/CV )
+			* Put
+		Next
+	»
+»
+CovarianceMatrixConstruct Store
+
+
+@@ Calculate the function values and a covariance matrix for:
 @@  a list of functions of
 @@  a list of parameters and values and
 @@  ther correlation matrix of the parameters.
 @@
-@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- covarianceMatrix )
+@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- functionValues covarianceMatrix )
 @@
 @@ The list of functions is a list of (algebraic) expressions.
 @@  e.g. { 'a + b + c' 'a * (b + c)' }
@@ -260,47 +336,73 @@ Jacobian Store
 @@ The list of values is a list of uncertain numbers.
 @@  e.g. { 10±σ1 20±σ2 30±σ3 }
 @@
-@@ The values should not have units.
-@@
 @@ The order of the rows and coloms in the correlation matrix
 @@  and the order of the lists of parameters and values should match.
 @@
 @@ The correlation matrix must be completely filled,
 @@  not just the upper or lower triangle.
 @@
+@@ If the functions or/and paramter values have units,
+@@  you may get "Inconsistent units" errors.
+@@ This comes from taking the derivative
+@@  and its poor handling of unit expressions.
+@@ This command catches the error and proceeds
+@@  with a numerical approximation of the derivative.
 «
 	@@ Extra local variables
-	{}
+	{} {}
 
-	→ f p v R u
+	→ f p vu R v u
 	«
-		@@ Separate the uncertainties.
-		v
-		« Object→ Swap Drop »
+		f
+		«
+			p vu zipper
+			Where Evaluate
+		»
 		Map
-		'u' Store
 
-		@@ Separate the values.
-		v
-		« Object→ Drop »
+		"Uncorrelated values"
+		ToTag
+
+
+		@@ Separate the values with uncertainty in value and uncertainty.
+		vu
+		«
+			If
+				Duplicate TypeName "unit" =
+			Then
+				RangeWithUnitsFrom
+			Else
+				Object→
+			End
+
+			@@ Append (not prepend) to the result lists.
+			u Swap + 'u' Store
+			v Swap + 'v' Store
+
+			@@ Map needs a result.
+			0
+		»
 		Map
-		'v' Store
+		@@ Don't need the map result, only its side effect (u and v).
+		Drop
 
-		@ Calculate the Jacobian for the functions at the values of the parameters.
+
+		@@ Calculate the Jacobian for the functions at the values of the parameters.
 		f
 		p v zipper
 		Jacobian
-		
-		@ Transform the uncertainties to matrix form.
-		u FromList ToArray DiagonalFrom
 
-		@ Calculate the covariance matrix: CV = u * R * transpose(u)
-		@ u is diagonal, so no transpose needed.
-		R over * *
+		@@ Calculate the covariance matrix.
+		u R
+		CovarianceMatrixConstruct
 
-		@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
+		@@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
 		Over Transpose * *
-	»
+
+		"Covariance (σ²) matrix"
+		ToTag
+		»
 »
 PropagateUncertainty Store
 
