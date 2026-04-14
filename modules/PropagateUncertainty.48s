@@ -1,5 +1,23 @@
 «
 
+@@ (C) Ed van Gasteren <Ed@vanGasteren.net>
+@@ This software is licensed under the terms outlined in LICENSE.txt
+@@  at https://github.com/c3d/db48x/blob/stable/LICENSE.txt.
+@@
+@@ This software is distributed in the hope that it will be useful,
+@@   but WITHOUT ANY WARRANTY; without even the implied warranty of
+@@   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+@@ Comment conventions:
+@@
+@@ I (mostly) put functional comments before a bit of code.
+@@ I often include what will happen with the stack in the form:
+@@  ( <stack before> -- <stack after> ).
+@@ Sometimes there is more on the stack, that can be ignored
+@@  while working with the following bit of code, but is needed
+@@  later. That is indicated with "..." .
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@ These first few functions where usefull while developing this.
 @@ They could be removed.
@@ -13,10 +31,10 @@
 «
 	→ v
 	«
-		@ Initialise the output matrix.
+		@@ Initialise the output matrix.
 		v Size Head IdentityMatrix
 
-		@ Copy each vector element to the corresponding diagonal position.
+		@@ Copy each vector element to the corresponding diagonal position.
 		1  v Size Head
 		For i
 		    {}  i +  i +
@@ -65,6 +83,8 @@ GenerateRandomCorrelationMatrix Store
 @@ For an overview see (or other simular documentation):
 @@ https://en.wikipedia.org/wiki/Propagation_of_uncertainty
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ A few helper commands.
 
 @@ Break up a range with units to its a and b value, with units.
 @@ (<a b range>_rangeUnit -- a_aUnit b_bUnit)
@@ -96,6 +116,7 @@ RangeWithUnitsFrom Store
 «
 	→ l1 l2
 	«
+		@@ Initialize result.
 		{}
 
 		1  l1 size
@@ -107,6 +128,7 @@ RangeWithUnitsFrom Store
 »
 zipper Store
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 @@ Calculate the "numerical derivative".
 @@ ( function { x v } -- df/dx_approximation )
@@ -114,7 +136,7 @@ zipper Store
 @@ The { x v } parameter is a list of a single function parameter with its value.
 @@ 
 @@ See: https://en.wikipedia.org/wiki/Numerical_differentiation: five point midpoint approximation.
-@@ The differentation approximation parameter h is here not an absolute small value but = x * d.
+@@ The differentation approximation parameter h is not an absolute small value but h = x * d.
 @@ Where d is a small value.
 @@
 @@ Note that we do not evaluate for x = v. v is not used at all.
@@ -178,7 +200,7 @@ zipper Store
 		@@ no harm will be done here.
 		@@ It is up to the calling command to deal with x = 0.
 		12
-		@ h = p * d
+		@@ h = p * d
 		xv 1 Get  d * *
 		/
 	»
@@ -204,7 +226,7 @@ NumericalDerivative Store
 
 		@@ Keep all x[*] but x[i] constant.
 		@@ Evaluate f for all x[*] except x[i].
-		@@ ( -- fPartialEvaluated )
+		@@ ( ... -- fPartialEvaluated )
 		f
 		@@ Take x[i] out of pv, by changing it.
 		pv  parameterIndex  "~dummy~"  Put
@@ -275,11 +297,11 @@ Gradient Store
 Jacobian Store
 
 
-@ Construct a covariance matrix.
-@ ( u R -- CV )
-@
-@ u is a list of uncertainties.
-@ R is a correlation matrix.
+@@ Construct a covariance matrix.
+@@ ( u R -- CV )
+@@
+@@ u is a list of uncertainties.
+@@ R is a correlation matrix.
 «
 	→ u R
 	«
@@ -303,6 +325,7 @@ Jacobian Store
 		Duplicate Size
 		FromList Drop2
 
+		@@ Process row by row.
 		1 Swap
 		For i
 			@@ ( uu -- uu {i} )
@@ -346,14 +369,15 @@ CovarianceMatrixConstruct Store
 @@  you may get "Inconsistent units" errors.
 @@ This comes from taking the derivative
 @@  and its poor handling of unit expressions.
-@@ This command catches the error and proceeds
-@@  with a numerical approximation of the derivative.
+@@ The PartialDerivative command catches the error and proceeds
+@@  with a algebraic approximation of the derivative.
 «
 	@@ Extra local variables
 	{} {}
 
 	→ f p vu R v u
 	«
+		@@ Evaluate the functions, ignoring correlation.
 		f
 		«
 			p vu zipper
