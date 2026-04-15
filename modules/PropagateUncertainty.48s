@@ -373,22 +373,11 @@ CovarianceMatrixConstruct Store
 @@  with a algebraic approximation of the derivative.
 «
 	@@ Extra local variables
-	{} {}
+	@@ ( ... -- v u pv fCV )
+	{} {} {} [[]]
 
-	→ f p vu R v u
+	→ f p vu R v u pv fCV
 	«
-		@@ Evaluate the functions, ignoring correlation.
-		f
-		«
-			p vu zipper
-			Where Evaluate
-		»
-		Map
-
-		"Uncorrelated values"
-		ToTag
-
-
 		@@ Separate the values with uncertainty in value and uncertainty.
 		vu
 		«
@@ -411,22 +400,29 @@ CovarianceMatrixConstruct Store
 		@@ Don't need the map result, only its side effect (u and v).
 		Drop
 
+		p v zipper
+		'pv' Store
 
 		@@ Calculate the Jacobian for the functions at the values of the parameters.
-		f
-		p v zipper
-		Jacobian
-
-		@@ Calculate the covariance matrix.
-		u R
-		CovarianceMatrixConstruct
-
+		f pv Jacobian
+		@@ Construc the covariance matrix of the parameters.
+		u R CovarianceMatrixConstruct
 		@@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
 		Over Transpose * *
+		'fCV' Store
 
-		"Covariance (σ²) matrix"
-		ToTag
-		»
+		1  f Size
+		For i
+			@@ Evaluate the function.
+			f {} i + Get
+		    	pv Where Evaluate
+		    	@@ Get and attach its uncertainty.
+			fCV {} i + i + Get SquareRoot
+		    	ToUncertain
+		Next
+
+		f Size ToList
+	»
 »
 PropagateUncertainty Store
 
@@ -442,9 +438,9 @@ PropagateUncertainty Store
  [ 0 0 1 ]]
 
 PropagateUncertainty
-SquareRoot
 
-@ Expect sqrt(14) = 3.74165 73867 7
+@ Expect: { 60±σ3.74165 73867 7 }
+@ sqrt(14) = 3.74165 73867 7
 
 
 @ With correlation between a and b.
@@ -457,9 +453,9 @@ SquareRoot
  [ 0 0 1 ]]
 
 PropagateUncertainty
-SquareRoot
 
-@ Expect sqrt(18) = 4.24264 06871 2
+@ Expect: { 60±σ4.24264 06871 2 }
+@ sqrt(18) = 4.24264 06871 2
 
 
 @ With negative correlation between b and c.
@@ -472,9 +468,9 @@ SquareRoot
  [  0 -1  1 ]]
 
 PropagateUncertainty
-SquareRoot
 
-@ Expect sqrt(2) = 1.41421 35623 7
+@ Expect: { 60±σ1.41421 35623 7 }
+@ sqrt(2) = 1.41421 35623 7
 
 
 »
