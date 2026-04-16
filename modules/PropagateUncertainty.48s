@@ -348,7 +348,7 @@ CovarianceMatrixConstruct Store
 @@  a list of parameters and values and
 @@  ther correlation matrix of the parameters.
 @@
-@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- functionValues covarianceMatrix )
+@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- listOfFunctionValues covarianceMatrix )
 @@
 @@ The list of functions is a list of (algebraic) expressions.
 @@  e.g. { 'a + b + c' 'a * (b + c)' }
@@ -420,8 +420,9 @@ CovarianceMatrixConstruct Store
 			fCV {} i + i + Get SquareRoot
 		    	ToUncertain
 		Next
-
 		f Size ToList
+
+		fCV
 	»
 »
 PropagateUncertainty Store
