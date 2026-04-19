@@ -19,31 +19,46 @@
 @@  later. That is indicated with "..." .
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@ These first few functions where usefull while developing this.
-@@ They could be removed.
+@@ DB48X doesn't (yet) provide the DIAG→ nor →DIAG command.
+@@ These are purpose targeted alternative implementation.
 
-@@ DB48X doesn't (yet) provide the DIAG→ command.
-@@ This is a purpose targeted alternative implementation.
-
-@@ Transform a vector to a diagonal matrix.
-@@ ( vector -- matrix )
-@@ 
+@@ Transform a list to a diagonal matrix.
+@@ ( list -- matrix )
 «
-	→ v
+	→ l
 	«
 		@@ Initialise the output matrix.
-		v Size Head IdentityMatrix
+		l Size  IdentityMatrix
 
-		@@ Copy each vector element to the corresponding diagonal position.
-		1  v Size Head
+		@@ Copy each element to the corresponding diagonal position.
+		1  l Size
 		For i
-		    {}  i +  i +
-		    v  i  Get
-		    Put
+			{} i + i +
+		    	l  i  Get
+		    	Put
 		Next
 	»
 »
 DiagonalFrom Store
+
+
+@@ Transform the diagonal of a matrix to a list.
+@@ ( matrix -- list )
+«
+	→ m
+	«
+		@@ Initialise the output list.
+		{}
+
+		@@ Copy each element from the corresponding diagonal position.
+		1  m Size Head
+		For i
+			m  {} i + i + Get
+		    	+
+		Next
+	»
+»
+ToDiagonal Store
 
 
 @@ Generate a size n correlation matrix with random values.
@@ -127,6 +142,42 @@ RangeWithUnitsFrom Store
 	»
 »
 zipper Store
+
+
+@@ Matrix element wise binary operation
+@@ ( A B operation -- AB )
+@@
+@@ AB[i, j] = A[i, j] operation B[i, j].
+@@
+@@ DB48X does not provide this for matrices.
+@@ It does for 1 dimensional arrays.
+«
+	→ A B operation
+	«
+		@@ Create AB.
+		A Size 0 ConstantArray
+		
+		@@ Do it row by row.
+		1  A Size Head
+		For i
+			@@ ( ... -- { i } )
+			{} i +
+			@@ Get that row from A.
+			@@ ( { i } -- { i } A[i, *] )
+			A over Get
+			@@ Get that row from B.
+			@@ ( { i } A[i, *] --  { i } A[i, *] B[i, *] )
+			B 3 Pick Get
+			@@ (  { i } A[i, *] B[i, *] --
+			operation
+			@@ Keep the result.
+			@@ ( { i } <A[i, *] B[i, *] operation> -- )
+			Put
+		Next
+	»
+»
+MatrixElementWiseBinaryOperation Store
+
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -302,53 +353,84 @@ Jacobian Store
 @@
 @@ u is a list of uncertainties.
 @@ R is a correlation matrix.
+@@ The indexes of u and R must correspond.
+@@
+@@ CV = u * R * transpose(u).
+@@ transpose(u) = u.
+@@
+@@ It doesn't work ... with units.
+@@ Workaround is to do it element wise.
 «
 	→ u R
 	«
-		@@ Calculate the covariance matrix: CV[i, j] = uu[i, j] * R[i, j].
-		@@ Where uu[i, j] = u[i] * u[j].
-		@@ This is not a 'dot' operation but element multiplication.
-		@@ DB48X does not provide element multiplication for matrices.
-		@@ It does for 1 dimensional arrays.
+		u DiagonalFrom
+		R Over * *
+	»
+»
+'CovarianceMatrixConstruct' Store
 
+
+@@ Construct a covariance matrix.
+@@ ( u R -- CV )
+@@
+@@ u is a list of uncertainties.
+@@ R is a correlation matrix.
+@@ The indexes of u and R must correspond.
+@@
+@@ CV[i, j] = uu[i, j] * R[i, j].
+@@ Where uu[i, j] = u[i] * u[j].
+«
+	→ u R
+	«
+
+		@@ Create uu, the outer product of u with u.
 		@@ Transform u into an (n, 1) matrix.
 		@@ ( -- u )
 		u FromList ToArray 1 ColumnsToMatrix
-		@@ Create uu, the outer product of u with u.
-		@@ ( -- uu )
+		@@ ( u -- uu )
 		Duplicate Transpose *
 
-		@@ For all i and j: CV[i, j] = uu[i, j] * R[i, j].
-		@@ The uu on the stack will be transformed to CV.
-		
-		@@ ( uu -- uu #rows)
-		Duplicate Size
-		FromList Drop2
-
-		@@ Process row by row.
-		1 Swap
-		For i
-			@@ ( uu -- uu {i} )
-			{} i +
-			@@ ( uu {i} -- uu {i} uu[i, *])
-			Duplicate2 Get
-			@@ ( uu {i} uu[i, *] -- uu {i} uu[i, *] R[i, *] )
-			R 3 Pick Get
-			@@ CV[i, *] = uu[i, *] * R[i, *].
-			@@ ( uu {i} uu[i, *] R[i, *] -- uu/CV )
-			* Put
-		Next
+		R
+		« × » MatrixElementWiseBinaryOperation
 	»
 »
-CovarianceMatrixConstruct Store
+'CovarianceMatrixConstruct' Store
 
 
-@@ Calculate the function values and a covariance matrix for:
+@@ Breakout a covariance matrix to a correlation matrix and uncertainties.
+@@ ( CV -- u R )
+@@
+@@ u is a list of uncertainties.
+@@ R is a correlation matrix.
+@@
+@@ This is the inverse of CovarianceMatrixConstruct
+«
+	→ CV
+	«
+		@@ Create u.
+		CV ToDiagonal
+		SquareRoot
+
+		@@ Create uu, the outer product of u with u.
+		@@ Transform u into an (n, 1) matrix.
+		@@ ( -- u[] )
+		Duplicate FromList ToArray 1 ColumnsToMatrix
+		@@ ( u[] -- uu[ , ] )
+		Duplicate Transpose *
+
+		CV Swap
+		« ÷ » MatrixElementWiseBinaryOperation
+	»
+»
+CorrelationMatrixConstruct Store
+
+
+@@ Calculate the function values and a correlation matrix for:
 @@  a list of functions of
 @@  a list of parameters and values and
-@@  ther correlation matrix of the parameters.
+@@  their correlation matrix of the parameters.
 @@
-@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- listOfFunctionValues covarianceMatrix )
+@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- listOfFunctionValues correlationMatrix )
 @@
 @@ The list of functions is a list of (algebraic) expressions.
 @@  e.g. { 'a + b + c' 'a * (b + c)' }
@@ -373,10 +455,10 @@ CovarianceMatrixConstruct Store
 @@  with a algebraic approximation of the derivative.
 «
 	@@ Extra local variables
-	@@ ( ... -- v u pv fCV )
-	{} {} {} [[]]
+	@@ ( ... -- v u pv )
+	{} {} {}
 
-	→ f p vu R v u pv fCV
+	→ f p vu R v u pv
 	«
 		@@ Separate the values with uncertainty in value and uncertainty.
 		vu
@@ -409,7 +491,11 @@ CovarianceMatrixConstruct Store
 		u R CovarianceMatrixConstruct
 		@@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
 		Over Transpose * *
-		'fCV' Store
+
+		@@ Get the uncertainties for the function values and their correlation.
+		CorrelationMatrixConstruct
+		'R' Store
+		'u' Store
 
 		1  f Size
 		For i
@@ -417,12 +503,12 @@ CovarianceMatrixConstruct Store
 			f {} i + Get
 		    	pv Where Evaluate
 		    	@@ Get and attach its uncertainty.
-			fCV {} i + i + Get SquareRoot
+			u {} i + Get
 		    	ToUncertain
 		Next
 		f Size ToList
 
-		fCV
+		R
 	»
 »
 PropagateUncertainty Store
@@ -440,7 +526,7 @@ PropagateUncertainty Store
 
 PropagateUncertainty
 
-@ Expect: { 60±σ3.74165 73867 7 }
+@ Expect: { 60±σ3.74165 73867 7 } [[1]]
 @ sqrt(14) = 3.74165 73867 7
 
 
@@ -455,7 +541,7 @@ PropagateUncertainty
 
 PropagateUncertainty
 
-@ Expect: { 60±σ4.24264 06871 2 }
+@ Expect: { 60±σ4.24264 06871 2 } [[1]]
 @ sqrt(18) = 4.24264 06871 2
 
 
@@ -470,7 +556,7 @@ PropagateUncertainty
 
 PropagateUncertainty
 
-@ Expect: { 60±σ1.41421 35623 7 }
+@ Expect: { 60±σ1.41421 35623 7 } [[1]]
 @ sqrt(2) = 1.41421 35623 7
 
 
