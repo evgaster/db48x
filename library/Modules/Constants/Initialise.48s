@@ -1,0 +1,55 @@
+«
+
+@ Create and enter the workspace.
+ModuleConstant
+Duplicate CreateDirectory
+Evaluate
+
+
+"Constants"
+ModuleName Store
+
+@@ Where the module parts are to be found.
+"/library/Modules/" ModuleName Add "/" Add
+ModulePath Store
+
+@@ Which parts should be loaded and in which order.
+{ "Workaround" "GenericFunctions" "Database" }
+{ "Menu" } +
+{ "Finalise"} +
+ModulePartsList Store
+
+
+@@ Below:
+@@ - loading of the parts;
+
+
+@@ Load a part of the module.
+@@ ( <Part name> -- )
+«
+	ModulePath
+	Swap Add ".48s" Add
+	Recall Evaluate
+»
+LoadModulePart Store
+
+
+@@ Load a list of parts.
+@@ ( <List of part names> -- ) 
+«
+	ReverseList FromList
+	@ ( PartN ... Part1 N -- )
+	
+	1 Swap
+	Start
+	    LoadModulePart
+	Next
+»
+LoadModulePartList Store
+
+
+ModulePartsList
+LoadModulePartList
+
+
+»

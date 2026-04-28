@@ -1,0 +1,86 @@
+«
+
+@@ Temporary workaround for issue 1648.
+
+@@ Filter a list according to a predicate
+@@ ( inputList predicate -- outputList )
+«
+	{}
+     	→ inputList predicate outputList
+	«
+		@@ Keep the input list on the stack.
+		inputlist
+
+		@@ Iterate over the input list.
+		While
+			@@ Still work to be done?
+			Duplicate Size 0 >
+		Repeat
+			@@ Transform the head of the input list.
+			Duplicate
+			Head
+			
+		    	If
+				Duplicate predicate
+			Then
+				@@ Save the wanted value value.
+			   	outputList
+				Swap 1 ToList
+				Add
+				'outputList' Store
+			Else
+				Drop
+			End
+
+			@@ Move on to the tail of the input list.
+			Tail
+		End
+
+		@@ Remove the now empty input list.
+		Drop
+		@@ That's what we want.
+		outputList
+	»
+»
+ConstantFilter Store
+
+
+@@ Map a transformation over a list.
+@@ ( inputList tranformation -- outputList )
+«
+	{}
+     	→ inputList transformation outputList
+	«
+		@@ Keep the input list on the stack.
+		inputlist
+
+		@@ Iterate over the input list.
+		While
+			@@ Still work to be done?
+			Duplicate Size 0 >
+		Repeat
+			@@ Transform the head of the input list.
+			Duplicate
+			Head
+			transformation
+
+			@@ Save the transformed value.
+			outputList
+			Swap 1 ToList
+			Add
+			'outputList' Store
+
+			@@ Move on to the tail of the input list.
+			Tail
+		End
+
+		@@ Remove the now empty input list.
+		Drop
+		@@ That's what we want.
+		outputList
+	»
+»
+ConstantMap Store
+
+
+»

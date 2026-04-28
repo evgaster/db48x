@@ -1,0 +1,270 @@
+«
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Constant Menus.
+
+@@ There are 3 types of menus:
+@@ 1) Navigate: a menu to navigate the tree of sections and select a Section;
+@@ 2) Select:   a menu for a Section to allow to select a Constant;
+@@ 3) Retrieve: a menu for a Constant to allow to select information about the Constant.
+@@
+@@ Menu 3) is static. Menus 1) and 2) are generated as needed.
+
+{
+	{ "~Name~"      « ConstantFilteredByNameMenuActivate » }
+	{ "~Desc~"      « ConstantFilteredByDescriptionMenuActivate » }
+}
+ConstantNavigateMenuDefault Store
+
+
+{}
+ConstantNavigateMenu Store
+
+
+{
+	{ "↓Navigate↓"	« ConstantNavigateMenuActivate » }
+}
+ConstantSelectMenuDefault Store
+
+
+{}
+ConstantSelectMenu Store
+
+
+{
+	{ "Descrip" « ConstantRetrieveDescription ConstantSelectMenuActivate » }
+	{ "Help"    « ConstantHelp ConstantSelectMenuActivate » }
+	{ "Value"   « ConstantRetrieveValue ConstantSelectMenuActivate » }
+	{ "StdUnc"  « ConstantRetrieveStandardUncertainty ConstantSelectMenuActivate » }
+	{ "RelUnc"  « ConstantRetrieveRelativeUncertainty ConstantSelectMenuActivate » }
+	{ "∆Range"  « Constant→∆Range ConstantSelectMenuActivate » }
+	{ "Object"  « ConstantRetrieveFromDatabase ConstantSelectMenuActivate » }
+}
+ConstantRetrieveMenu Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands to activate Menus.
+
+
+@@ Activate a Constant Menu.
+@@ Shared for all 3 types of menus.
+@@ ( menu -- )
+«
+	Menu
+»
+ConstantMenuActivate Store
+
+
+@@ Activate Constant Navigate Menu.
+@@ ( -- )
+«
+	ConstantNavigateMenu
+	ConstantMenuActivate
+»
+ConstantNavigateMenuActivate Store
+
+
+@@ Activate Constant Select Menu.
+@@ ( -- )
+«
+	ConstantSelectMenu
+	ConstantMenuActivate
+»
+ConstantSelectMenuActivate Store
+
+
+@@ Activate Constant Retrieve Menu.
+@@ ( -- )
+«
+	ConstantRetrieveMenu
+	ConstantMenuActivate
+»
+ConstantRetrieveMenuActivate Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands to generate navigation menus.
+
+
+@@ Is this a menu leaf node?
+@@ ( name -- True / False )
+«
+	→ name
+	«
+		ConstantMenuDatabase
+		{ Head } name + { = } +  ToProgram
+		ConstantFilter  @ Issue 1648
+
+		Size 0 =
+	»
+»
+ConstantIsMenuLeafNode Store
+
+
+@@ Generate a navigate menu.
+@@ ((sub)Menu(Tree) -- menu)
+«
+	@@ (node -- { MenuLabel « Object Action » } )
+	«
+		→ node
+		«
+			@@ ( -- MenuLabel )
+			node
+			@@ ( MenuLabel -- MenuLabel Section / subMenu )
+			node
+
+			@@ ( ... -- { Action } )
+			If
+				node ConstantIsMenuLeafNode
+			Then
+				{ ConstantSectionMenuActivate } 
+			Else
+				{ ConstantSubMenuActivate } 
+			End
+
+			@@ ( ... Section / subMenu { Action } --  « Section / subMenu Action ») 
+			+  ToProgram
+			@@ ( MenuLabel « Section / subMenu Action » -- { MenuLabel « Section / subMenu Action » } )
+			2 Tolist
+		»
+	»
+	ConstantMap  @ Issue 1648
+
+	ConstantNavigateMenuDefault
+	Swap +
+»
+ConstantNavigateMenuGenerate Store
+
+
+@@ Generate and activate a navigation SubMenu.
+@@ ((sub)Menu(Tree)Name -- )
+«
+	→ MenuTreeName
+	«
+		ConstantMenuDatabase
+		{ Head } MenuTreeName + { = } +  ToProgram
+		ConstantFilter  @ Issue 1648
+	»
+	Head Tail
+
+	ConstantNavigateMenuGenerate
+	'ConstantNavigateMenu' Store
+	ConstantNavigateMenuActivate
+»
+ConstantSubMenuActivate Store
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands to generate Section AKA selection menus.
+
+@@ Generate a constant select menu.
+@@ ( <list of constant Name(s)> -- menu )
+«
+	«
+		@ (<name> -- ... )
+		
+		@ Construct: « <name> ConstantRetrieveMenuActivate ».
+		{} Over +  { ConstantRetrieveMenuActivate } +  ToProgram
+		
+		2 ToList
+		@ (... -- { <name> « <name> ConstantRetrieveMenuActivate » } )
+	»
+	ConstantMap @ Issue 1648
+
+	ConstantSelectMenuDefault
+	Swap +
+»
+ConstantSelectMenuGenerate Store
+
+
+@@ Generate and activate the Constant select menu for a Section.
+@@ ( sectionName  -- )
+«
+	→ sectionName
+	«
+		ConstantSectionDatabase
+		{ Head } sectionName + { = } +  ToProgram
+		ConstantFilter  @ Issue 1648
+	»
+
+	@ ( { { SectionName { ConstantName+ } }+ } -- { ConstantName+ } )
+	{ 1 2 } Get
+
+	ConstantSelectMenuGenerate
+	'ConstantSelectMenu' Store
+	ConstantSelectMenuActivate
+»
+ConstantSectionMenuActivate Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands for the ~Name~ and ~Desc~ menu buttons.
+
+@@ Filter the database by the string being contained in the attribute (number).
+@@ ( searchString attribute -- filteredDataBase )
+«
+     	→ whatToSearchFor attribute
+	«
+		ConstantDatabase
+		
+		@ Build the filter.
+		@ Does the attribute contain what is searched for?
+		@ Get the attribute. Check if the search string is contained in it.
+		attribute { Get } +  whatToSearchFor +  { TextContains } +  ToProgram
+		
+		ConstantFilter  @ Issue 1648
+	»
+»
+ConstantDatabaseFilterByAttribute Store
+
+«
+     	1 ConstantDatabaseFilterByAttribute
+»
+ConstantDatabaseFilterByName Store
+
+«
+     	2 ConstantDatabaseFilterByAttribute
+»
+ConstantDatabaseFilterByDescription Store
+
+
+@@ Activate a Constant Select Menu for a (partial) database.
+@@ ( filteredDatabase -- )
+«
+	« Head »
+	ConstantMap @ Issue 1648
+
+	@ Check for empty result.
+        If
+                Duplicate Size  0  =
+        Then
+                Drop
+                "No matching Constant(s) found!" DoError
+        End
+
+	ConstantSelectMenuGenerate
+	'ConstantSelectMenu' Store
+	ConstantSelectMenuActivate
+»
+ConstantFilteredMenuActivate Store
+
+
+@@ Activate a Constant Select Menu restricted by a name substring.
+@@ ( nameSubstring -- )
+«
+	ConstantDatabaseFilterByName
+	ConstantFilteredMenuActivate
+»
+ConstantFilteredByNameMenuActivate Store
+
+
+@@ Activate a Constant Select Menu restricted by a description substring.
+@@ ( descriptionSubstring -- )
+«
+	ConstantDatabaseFilterByDescription
+	ConstantFilteredMenuActivate
+»
+ConstantFilteredByDescriptionMenuActivate Store
+
+
+»

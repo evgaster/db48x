@@ -1,0 +1,43 @@
+{
+
+	{
+		"ConstantMenu"
+			"Astronomy"
+			"Chemistry"
+			"Computing"
+			"Electromagnetism"
+			"Magnetism"
+			"Mass"
+			"Materials"
+			"Mathematics"
+			"Physics"
+			"Quantum"
+			"Scattering"
+			"Size"
+	}
+
+	{
+		"Astronomy"
+			"Black Star"
+			"Earth"
+			"Jupiter"
+			"Mars"
+			"Mercury"
+			"Neptune"
+			"Pluto"
+			"Saturn"
+			"Sun"
+			"Uranus"
+			"Venus"
+	}
+}
+
+@@ The Menu database is a list of Nodes.
+@@ A Node is a list.
+@@ Its Head is its name.
+@@ Its Tail is an enumeration of the names of its subNodes or leaves.
+@@ A name is a TypeName = "text" object.
+@@ A subNode should occur in the database. That types it as a Node.
+@@ A leaf is not a subNode. Its absence types it as a leaf.
+
+@@ In the example above node "ConstantMenu" has a subNode "Astronomy"

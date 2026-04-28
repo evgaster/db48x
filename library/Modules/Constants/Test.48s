@@ -1,0 +1,90 @@
+«
+
+
+@@ Compare a constant: 1st generation (C++) versus 2nd generation (rpl).
+@@ ( constantName -- result )
+@@
+@@ If they are equal result is the constant name.
+«
+	@@ ( name -- name result )
+	Duplicate
+
+	If
+		@@ ( name result -- name result g1Value )
+		"Ⓒ" 3 Pick + CompileToObject
+		LibraryConstant
+		@@ ( name result g1Value -- name result g1Value g2Value)
+		3 pick
+		ConstantRetrieveValue
+		DeleteTag
+
+		@@ Not equal?
+		== Not
+	Then
+		@@ ( name result -- name newResult )
+		" value incorrect" +
+	End
+
+	If
+		"Ⓒ" 3 Pick + CompileToObject
+		StandardUncertainty
+		3 pick
+		ConstantRetrieveStandardUncertainty
+		DeleteTag
+
+		== Not
+	Then
+		@@ ( name result -- name newResult )
+		" sU incorrect" +
+	End
+
+	If
+		"Ⓒ" 3 Pick + CompileToObject
+		RelativeUncertainty
+		3 pick
+		ConstantRetrieveRelativeUncertainty
+		DeleteTag
+
+		== Not
+	Then
+		@@ ( name result -- name newResult )
+		" rU incorrect" +
+	End
+
+	@@ ( name result -- result)
+	Swap Drop
+»
+ConstantTestOne Store
+
+
+@@ Retrieve all 1st and 2nd generation information for a constant.
+@@ ( ConstantName -- information+ ) 
+«
+	@@ ( name -- name G1value G2Value ) 
+	"Ⓒ" 2 Pick + CompileToObject
+	LibraryConstant
+	Over
+	ConstantRetrieveValue
+
+	"Ⓒ" 4 Pick + CompileToObject
+	StandardUncertainty
+	4 pick
+	ConstantRetrieveStandardUncertainty		
+
+	"Ⓒ" 6 Pick + CompileToObject
+	RelativeUncertainty
+	6 pick
+	ConstantRetrieveRelativeUncertainty
+»
+ConstantRetrieveAllinformation Store
+
+ConstantDatabase
+« Head »
+ConstantMap
+« ConstantTestOne »
+ConstantMap
+« "incorrect" TextContains »
+ConstantFilter
+
+
+»

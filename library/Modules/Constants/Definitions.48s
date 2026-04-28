@@ -1,0 +1,677 @@
+«
+
+@@ Copy + Paste + run the content of Define.48s
+@@ Copy + Paste + run the content of this file.
+
+{} 'ConstantDatabase' Store
+
+@@ Afterwards:
+@@
+@@ Move the new database file to the right place!
+
+
+@@ These definitions are based on constants.cc from version 0.9.18 or earlier.
+@@ There a definition looks like:
+@@
+@@    // *Coulomb constant - Calculation from measurement
+@@    "ke",      "[ 'ROUND(CONVERT(1/(4*Ⓒπ*Ⓒε₀);1_(N*(m/C)²));XPON(UVAL(Ⓡke/(4*Ⓒπ*Ⓒε₀)))-XPON(UVAL(1/(4*Ⓒπ*Ⓒε₀)))-2)'>
+@@                "  'CONVERT(ROUND(UBASE(Ⓡke*Ⓒke);-2);1_(N*(m/C)²))' "
+@@                "  'Ⓡε₀' "
+@@                "  8.988⁳⁹ N·m↑2/C↑2 ]",
+@@
+@@ The "Coulomb constant" is taken as a description.
+@@ The "Calculation from measurement" is taken as the type of the constant.
+@@
+@@ For each type there is a command to define such a constant.
+@@ Depending on the type several defining parameters are needed.
+@@ See the documentation of the respective command.
+@@ Most of the (above) complicated algebraic expressions are not needed.
+@@ The command for the type does the heavy lifting.
+
+@@ A constant that is used in the definition of an other constant,
+@@  must be defined before use.
+@@ That is why these definitions are not in the same order
+@@  as they are in constants.cc.
+
+@@ To be able to navigate to a constant it must be added to a Section in Section.db
+@@ and the Section must be included in a Menu via Menu.db.
+
+
+@@ Convenient aliases (for lazy typists).
+@@ At first the long names are used.
+@@ Later the short aliases are used.
+
+'ConstantRetrieveValue' V Store
+'ConstantRetrieveStandardUncertainty' sU Store
+'ConstantRetrieveRelativeUncertainty' rU Store
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+@@ Note how the value calculation is done with an rpl program>
+
+"π" "Ratio of a circle's circumference to its diameter"
+« Pi ToDecimal »  Evaluate
+ConstantBasicDefinition
+
+
+@@ Note how the value calculation is done with an algebraic expression.
+
+"e" "Euler's number"
+'→Decimal(EulerianNumber)'  Evaluate
+ConstantBasicDefinition
+
+"ⅈ" "Imaginary unit"
+0+ⅈ1
+ConstantBasicDefinition
+
+"∞" "A small version of infinity"
+9.99999E999999
+ConstantBasicDefinition
+
+"?" "Undefind result"
+Undefined
+ConstantBasicDefinition
+
+"ⅉ" "Imaginary unit"
+"ⅈ" ConstantRetrieveValue DeleteTag
+ConstantBasicDefinition
+
+"rad" "One Radian"
+1_r
+ConstantExactDefinition
+
+"twoπ" "Two pi radian"
+2  "π" ConstantRetrieveValue  *  "rad" ConstantRetrieveValue * 
+ConstantExactDefinition
+
+"angl" "Half turn"
+180_°
+ConstantExactDefinition
+
+"−∞" "A small version of negative infinity"
+"∞" ConstantRetrieveValue Negate
+ConstantBasicDefinition
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Physics
+
+"c" "Speed of light"
+299792458_m/s
+ConstantExactDefinition
+
+"G" "Gravitation constant"
+6.67430E-11_m^3/(s²*kg)
+0.00015E-11_m^3/(s²*kg)
+ConstantMeasurement
+
+"g" "Acceleration of Earth gravity"
+9.80665_m/s²
+ConstantDefinitionConvention
+
+
+@@ Moved up, needed for "μ₀".
+
+"qe" "Electronic charge"
+1.602176634E-19_C
+ConstantExactDefinition
+
+"h" "Planck"
+6.62607015E-34_J*s
+ConstantExactDefinition
+
+@ Description adjusted.
+"ℏ" "Dirac or reduced Planck"
+"h" ConstantRetrieveValue  2 "π" ConstantRetrieveValue *  /
+1_J*s
+ConstantExactCalculation
+
+"α" "fine-structure constant"
+0.00729735256434
+0.00000000000114
+ConstantMeasurement
+
+
+@@ Moved up, needed for "Z₀".
+
+"μ₀" "Vaccuum magnetic permeability"
+4 "π" ConstantRetrieveValue *  "α" ConstantRetrieveValue *  "ℏ" ConstantRetrieveValue *  "qe" ConstantRetrieveValue Square  "c" ConstantRetrieveValue *  /
+"α" ConstantRetrieveRelativeUncertainty
+1_H/m
+ConstantCalculationFromMeasurement
+
+
+"Z₀" "Vacuum characteristic impedance"
+"μ₀" ConstantRetrieveValue  "c" ConstantRetrieveValue  *
+"μ₀" ConstantRetrieveRelativeUncertainty
+1_Ω
+ConstantCalculationFromMeasurement
+
+"ε₀" "Vaccuum electric permittivity"
+"μ₀" ConstantRetrieveValue  "c" ConstantRetrieveValue Square * Invert
+"μ₀" ConstantRetrieveRelativeUncertainty
+1_F/m
+ConstantCalculationFromMeasurement
+
+"ke" "Coulomb constant"
+4 "π" ConstantRetrieveValue *  "ε₀" ConstantRetrieveValue * Invert
+"ε₀" ConstantRetrieveRelativeUncertainty
+1_N*(m/C)²
+ConstantCalculationFromMeasurement
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Chemistry
+
+"NA" "Avogadro's number"
+6.02214076E23_mol⁻¹
+ConstantExactDefinition
+
+"k" "Boltzmann"
+1.380649E-23_J/K
+ConstantExactDefinition
+
+@@ "Vm" below.
+
+"R" "Universal gas constant"
+"NA" ConstantRetrieveValue "k" ConstantRetrieveValue *
+1_J/(mol*K)
+ConstantExactCalculation
+
+"σ" "Stefan-Boltzmann"
+"π" ConstantRetrieveValue Square  60 /  "k" ConstantRetrieveValue 4 Power *  "ℏ" ConstantRetrieveValue 3 Power  "c" ConstantRetrieveValue Square *  /
+1_W/(m²*K^4)
+ConstantExactCalculation
+
+"StdT" "Standard temperature"
+273.15_K
+ConstantDefinitionConvention
+
+"StdP" "Standard pressure"
+101.325_kPa
+ConstantDefinitionConvention
+
+"Vm" "Molar volume"
+"R" ConstantRetrieveValue  "StdT" ConstantRetrieveValue *  "StdP" ConstantRetrieveValue /
+1_m^3/mol
+ConstantCalculationConvention
+
+
+@@ "Mu", "MC12" below.
+
+"n0" "Loschmidt constant"
+"NA" V  "Vm" V /
+1_m^-3
+ConstantExactCalculation
+
+
+@@ "SoR", "Da" below.
+
+"kq" "kq ratio"
+"k" V  "qe" V /
+1_J/(K*C)
+ConstantExactCalculation
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: mass
+
+@@ Moved up, needed for "me".
+
+"R∞" "Rydberg"
+10973731.568157_m⁻¹
+0.000012_m⁻¹
+ConstantMeasurement
+
+
+@@ "me" and "u" reference each other.
+@@ Broke the circular reference by shortcutting the Relative Uncertainty by taking it from "u".
+
+@@ CODATA gives an other definition, not a calculation but a value.
+@@ See: https://pml.nist.gov/cgi-bin/cuu/Value?me|search_for=electron+mass
+
+"me" "Electron mass"
+2  "h" ConstantRetrieveValue *  "R∞" ConstantRetrieveValue *  "α" ConstantRetrieveValue Square  "c" ConstantRetrieveValue *  /
+3.1E-10
+1 kg
+ConstantCalculationFromMeasurement
+
+"mn" "Neutron mass"
+1.67492750056E-27_kg
+0.00000000085E-27_kg
+ConstantMeasurement
+
+"mp" "Proton mass"
+1.67262192595E-27_kg
+0.00000000052E-27_kg
+ConstantMeasurement
+
+"mH" "Hydrogen mass"
+1.00782503223_u
+0.00000000009_u
+ConstantMeasurement
+
+"mD" "Deuterium mass"
+2.01410177812_u
+0.00000000012_u
+ConstantMeasurement
+
+"mT" "Tritium mass"
+3.0160492779_u
+0.0000000024_u
+ConstantMeasurement
+
+"mHe" "Helium atomic mass"
+4.00260325413_u
+0.00000000006_u
+ConstantMeasurement
+
+"mμ" "Muon mass"
+0.1134289257_u
+0.0000000025_u
+ConstantMeasurement
+
+"mτ" "Tau mass"
+1.90754_u
+0.00013_u
+ConstantMeasurement
+
+"mpme" "mpme ratio"
+1836.152673426
+0.000000032
+ConstantMeasurement
+
+
+@@ Moved up, needed for "u".
+
+"Are" "Electron relative atomic mass"
+5.485799090441E-4
+0.000000000097E-4
+ConstantMeasurement
+
+
+"u" "Mass unit (u)"
+"me" ConstantRetrieveValue  "Are" ConstantRetrieveValue  /
+3.1E-10
+1_kg
+ConstantCalculationFromMeasurement
+
+
+@@ Moved down, need "u"
+
+"Mu" "Molar Mass Constant"
+"NA" V  "u" V *
+"u" rU
+1_g/mol
+ConstantCalculationFromMeasurement
+
+"MC12" "C12 Molar Mass"
+12 "Mu" V *
+"Mu" rU
+1_g/mol
+ConstantCalculationFromMeasurement
+
+
+@ This has unit = 1.
+@ Had to change the definition command for this.
+
+"SoR" "Sakur-Tetrode constant"
+'(5/2) + ln(((V("u") * V("k") * 1_K) / (2 * V("π") * V("ℏ")²)) ^ (3/2) * V("k") * 1_K / V("StdP"))' Evaluate
+4.0E-10
+1
+ConstantCalculationFromMeasurement
+
+
+"Da" "Mass unit (Dalton)"
+"u" V
+"u" rU
+1_kg
+ConstantCalculationFromMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Electromagnetism
+
+@@ "qe" moved up.
+
+
+"λ0" "Photon wavelength"
+"h" V  "c" V *  "qe" V /  1_V /
+1_nm
+ConstantExactCalculation
+
+"f0" "Photon frequency"
+"c" V  "λ0" V /
+1_Hz
+ConstantExactCalculation
+
+"ge" "Electron g-factor"
+-2.00231930436092
+0.00000000000036
+ConstantMeasurement
+
+"qme" "qme ratio"
+"qe" V  "me" V /
+"me" rU
+1_C/kg
+ConstantCalculationFromMeasurement
+
+"μe" "Electron magnetic moment"
+-9.2847646917E-24_J/T
+0.0000000029E-24_J/T
+ConstantMeasurement
+
+"μp" "Proton magnetic moment"
+1.41060679545E-26_J/T
+0.00000000060E-26_J/T
+ConstantMeasurement
+
+"μn" "Neutron magnetic moment"
+-9.6623653E-27_J/T
+0.0000023E-27_J/T
+ConstantMeasurement
+
+"μμ" "Muon magnetic moment"
+-4.49044830E-26_J/T
+0.00000010E-26_J/T
+ConstantMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Size
+
+
+@ Moved up, needed for "re".
+
+@ Deviates from the pattern.
+@ In constants.cc the standard uncertainty is calculated differently.
+@ A calculated relative uncertainty (not pre rounded) is used.
+@ That is why that is substituted for "α" rU.
+@ Note that the value and standard uncertainty deviate from
+@  https://pml.nist.gov/cgi-bin/cuu/Value?eqbohrrada0
+
+"a0" "Bohr radius"
+4  "π" V *  "ε₀" V *  "ℏ" V Square *  "me" V  "qe" V Square  *  /
+"α" sU  "α" V / 
+1_nm
+ConstantCalculationFromMeasurement
+
+
+"re" "Classical electron radius"
+"α" V Square  "a0" V * 
+3  "α" sU  "α" V  /  *  -2 round
+1_fm
+ConstantCalculationFromMeasurement
+
+"rp" "Proton charge radius"
+8.4075⁳-16_m
+0.0064⁳-16_m
+ConstantMeasurement
+  
+"σe" "Thomson cross-section"
+8  "π" V *  "re" V Square *  3 /
+6  "α" sU  "α" V  /  *  -2 round
+1_m²
+ConstantCalculationFromMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Scattering
+
+"λc" "Electron Compton wavelength"
+"h" V  "me" V "c" V *  /
+"me" rU
+1_nm
+ConstantCalculationFromMeasurement
+
+"λcp" "Proton Compton wavelength"
+"h" V  "mp" V "c" V *  /
+"mp" rU
+1_nm
+ConstantCalculationFromMeasurement
+
+"λcn" "Neutron Compton wavelength"
+"h" V  "mn" V "c" V *  /
+"mn" rU
+1_nm
+
+ConstantCalculationFromMeasurement
+"λcμ" "Muon Compton wavelength"
+"h" V  "mμ" V "c" V *  /
+"mμ" rU
+1_nm
+ConstantCalculationFromMeasurement
+
+"λcτ" "Tau Compton wavelength"
+"h" V  "mτ" V "c" V *  /
+"mτ" rU
+1_nm
+ConstantCalculationFromMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Quantum mechanics
+
+@@ "h" "ℏ" "α" moved up.
+
+"ΔfCs" "Cs hyperfine transition"
+9192631770_Hz
+ConstantExactDefinition
+
+
+@@ Use ConstantCalculationFromMeasurement (for value rounding) over ConstantMeasurement.
+
+"θw" "Weak mixing angle"
+0.22305 SquareRoot asin
+0.22305 0.00023 + SquareRoot asin  0.22305 0.00023 - SquareRoot asin  - 2 /  -2 Round  Over /  -2 round
+1_°
+ConstantCalculationFromMeasurement
+
+"Lpl" "Planck length"
+"ℏ" V "G" V *  "c" V 3 Power /  SquareRoot
+"G" rU  2 /
+1_m
+ConstantCalculationFromMeasurement
+
+"Tpl" "Planck time"
+"ℏ" V "G" V *  "c" V 5 Power /  SquareRoot
+"G" rU  2 /
+1_s
+ConstantCalculationFromMeasurement
+
+"Mpl" "Planck mass"
+"ℏ" V  "c" V *  "G" V /  SquareRoot
+"G" rU  2 /
+1_kg
+ConstantCalculationFromMeasurement
+
+"Epl" "Planck energy"
+"ℏ" V  "c" V 5 Power *  "G" V /  SquareRoot
+"G" rU  2 /
+1_GeV
+ConstantCalculationFromMeasurement
+
+"T°pl" "Planck temperature"
+"ℏ" V  "c" V 5 Power *  "G" V /  SquareRoot  "k" V /
+"G" rU  2 /
+1_K
+ConstantCalculationFromMeasurement
+
+"Eh" "Hartree energy"
+2  "h" V *   "c" V *  "R∞" V *
+"R∞" rU
+1_J
+ConstantCalculationFromMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Magnetism
+
+"μB" "Bohr magneton"
+"qe" V  "ℏ" V *  2 "me" V  * /
+"me" rU
+1_J/T
+ConstantCalculationFromMeasurement
+
+"μN" "Nuclear magneton"
+"qe" V  "ℏ" V *  2 "mp" V  * /
+"mp" rU
+1_J/T
+ConstantCalculationFromMeasurement
+
+"γe" "Electron gyromagnetic ratio"
+2  "μe" V abs *  "ℏ" V /
+"μe" rU
+1_(s*T)^-1
+ConstantCalculationFromMeasurement
+
+"γp" "Proton gyromagnetic ratio"
+2  "μp" V abs *  "ℏ" V /
+"μp" rU
+1_(s*T)^-1
+ConstantCalculationFromMeasurement
+
+"γn" "Neutron gyromagnetic ratio"
+2  "μn" V abs *  "ℏ" V /
+"μn" rU
+1_(s*T)^-1
+ConstantCalculationFromMeasurement
+
+@@ "R∞" moved up.
+
+"Rk" "von Klitzing constant"
+2  "π" V *  "ℏ" V *  "qe" V Square /
+1_Ω
+ConstantExactCalculation
+
+"F" "Faraday constant"
+"NA" V "qe" V *
+1_C/mol
+ConstantExactCalculation
+
+"G0" "Conductance quantum"
+"qe" V Square  "π" V  "ℏ" V *  /
+1_S
+ConstantExactCalculation
+
+"G0F" "Fermi reduced coupling constant"
+1.1663787E-5_GeV^-2
+0.0000006E-5_GeV^-2
+ConstantMeasurement
+
+"c1" "First radiation constant"
+2  "π" V * "h" V *  "c" V Square *
+1_W*m²
+ConstantExactCalculation
+
+"c2" "Second radiation constant"
+"h" V  "c" V *  "k" V /
+1_m*K
+ConstantExactCalculation
+
+"c3" "Wien's constant"
+2.897771955185172661478605448092885_mm*K
+ConstantTheoryApproximation
+
+"c3f" "Wien's frequency constant"
+0.05878925757646824946606130795309722_THz/K
+ConstantTheoryApproximation
+
+"ø" "Magnetic flux quantum"
+"π" V  "ℏ" V * "qe" V /
+1_Wb
+ConstantExactCalculation
+
+"KJ" "Josephson constant"
+2  "qe" V * "h" V /
+1_Hz/V
+ConstantExactCalculation
+
+"Kc" "Quantum of circulation"
+"π" V  "ℏ" V *  "me" V /
+"me" rU
+1_m²/s
+ConstantCalculationFromMeasurement
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Materials
+
+"ε₀q" "ε₀q ratio"
+"ε₀" V  "qe" V /
+"ε₀" rU
+1_F/(m*C)
+ConstantCalculationFromMeasurement
+
+"qε₀" "qε₀ product"
+"qe" V  "ε₀" V *
+"ε₀" rU
+1_F*C/m
+ConstantCalculationFromMeasurement
+
+@@ Changed from ConstantDefinitionConvention (it has no unit).
+
+"εsi" "Dielectric constant"
+11.9
+ConstantBasicDefinition
+
+"εox" "SiO2 dielectric constant"
+3.9
+ConstantBasicDefinition
+
+
+"I₀" "Ref intensity"
+0.000000000001_W/m²
+ConstantDefinitionConvention
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Section: Computing
+
+"No" "Negative"
+False
+ConstantBasicDefinition
+
+"Yes" "Affirmative"
+True
+ConstantBasicDefinition
+
+"UnixEpoch" "Unix timestamp 0"
+19700101_date
+ConstantExactDefinition
+
+"SinclairZX81RAM" "The amount of RAM of the Sinclair ZX81 computer"
+1_KiB
+ConstantExactDefinition
+
+"PageSize" "The (often used) size of a memory page"
+4_KiB
+ConstantExactDefinition
+
+"HelloWorld" "Output of your first program"
+"Hello World"
+ConstantBasicDefinition
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Finalise;
+
+@@ Save the new Database.
+ConstantDatabase
+"Constant.db" Store
+
+@@ Cleanup Define.48s. 
+{
+	ConstantBasicDefinition
+  	ConstantExactDefinition
+  	ConstantExactCalculation
+	ConstantDefinitionConvention
+	ConstantCalculationConvention
+	ConstantMeasurement
+	ConstantCalculationFromMeasurement
+}
+@Purge
+Drop
+
+@@ Cleanup aliases.
+{
+	V
+	sU
+	rU
+}
+@Purge
+Drop
+
+»

@@ -1,0 +1,148 @@
+«
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ The constants database is a list of constant objects.
+{} ConstantDatabase Store
+
+@@ A constant object is a list consisting of:
+@@ name: text
+@@ description: text
+@@ value: a number
+@@ standard uncertainty: a number
+@@ relative uncertainty: a number
+
+
+@@ Add a Constant object to the database.
+@@ ( constantObject -- )
+«
+	ConstantDatabase
+	Swap  1 ToList
+	@ ( ConstantDatabase { constantObject } -- )
+	
+	Add
+	'ConstantDatabase' Store
+»
+ConstantAddToDatabase Store
+
+
+@@ Retrieve a Constant object from the database.
+@@ ( <Constant name> -- <Constant object> )
+@@
+@@ For performance reasons (unverified theory) do not use ConstantDatabaseFilterByName.
+@@ ToDo: Assume unique keys; don't filter; search and stop when found.
+«
+	ConstantDatabase
+	@ Construct: « Head <name> = ».
+	{ Head } Rot Add { = } Add ToProgram
+	ConstantFilter @ Issue 1648 
+
+	@ Check for empty result.
+	Duplicate Size
+	If
+		Duplicate 0 =
+	Then
+		Drop2
+		"Constant not found" DoError
+	End
+
+
+	@ Check for multi result.
+	If
+		1 >
+	Then
+		Drop
+		"Matches more then 1 constant" DoError
+	End
+	
+	Head
+»
+ConstantRetrieveFromDatabase Store
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands to Retrieve constant information from the database.
+
+@@ Retrieve a Constant Description from the database.
+@@ (<Constant name> -- <Constant value>)
+«
+	ConstantRetrieveFromDatabase
+	2 Get
+»
+ConstantRetrieveDescription Store
+
+
+@@ Retrieve a Constant value from the database.
+@@ (<Constant name> -- <Constant value>)
+«
+	Duplicate
+
+	ConstantRetrieveFromDatabase
+	3 Get
+
+	Swap
+	ToTag
+»
+ConstantRetrieveValue Store
+
+
+@@ Retrieve a Constant Standard Uncertainty from the database.
+@@ (<Constant name> -- <Constant Standard Uncertainty>)
+«
+	Duplicate
+
+	ConstantRetrieveFromDatabase
+	4 Get
+
+	Swap
+	ToTag
+	"sU"
+	ToTag
+»
+ConstantRetrieveStandardUncertainty Store
+
+
+@@ Retrieve a Constant Relative Uncertainty from the database.
+@@ (<Constant name> -- <Constant Relative Uncertainty>)
+«
+	Duplicate
+
+	ConstantRetrieveFromDatabase
+	5 Get
+
+	Swap
+	ToTag
+	"rU"
+	ToTag
+»
+ConstantRetrieveRelativeUncertainty Store
+
+
+@@ Retrieve a Constant and its Absolute Uncertainty from the database as a ∆Range.
+@@ (<Constant name> -- <Constant ∆Range>)
+«
+	Duplicate
+
+	ConstantRetrieveFromDatabase
+	Duplicate 3 Get
+	Swap 4 Get
+	→∆Range
+
+	Swap
+	ToTag
+»
+Constant→∆Range Store
+
+@@ Not a Database command.
+@@ Similar use.
+
+@@ Get Help for a Constant.
+@@ (<Constant name> --)
+«
+	"-constant" Add
+	Help
+	Drop
+»
+ConstantHelp Store
+
+»

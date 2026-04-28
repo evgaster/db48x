@@ -1,0 +1,331 @@
+{
+	{ "π" "Ratio of a circle's circumference to its diameter"
+		3.14159 26535 89793 23846 264
+		0 0 }
+	{ "e" "Euler's number"
+		2.71828 18284 59045 23536 029
+		0 0 }
+	{ "ⅈ" "Imaginary unit"
+		0+ⅈ1 0 0 }
+	{ "∞" "A small version of infinity"
+		9.99999⁳999999 0 0
+	}
+	{ "?" "Undefind result"
+		'Undefined' 0 0 }
+	{ "ⅉ" "Imaginary unit"
+		0+ⅈ1 0 0 }
+	{ "rad" "One Radian"
+		1_r 0_r 0 }
+	{ "twoπ" "Two pi radian"
+		6.28318 53071 79586 47692 530_r
+		0_r 0 }
+	{ "angl" "Half turn"
+		180_° 0_° 0 }
+	{ "−∞" "A small version of negative infinity"
+		-9.99999⁳999999 0
+		0 }
+	{ "c" "Speed of light"
+		299 792 458_m/s
+		0_m/s 0 }
+	{ "G" "Gravitation constant"
+		6.67430⁳-11_m↑3/(s↑2·kg)
+		1.50⁳-15_m↑3/(s↑2·kg)
+		0.00002 20 }
+	{ "g" "Acceleration of Earth gravity"
+		9.80665_m/s↑2 0_m/s↑2
+		0 }
+	{ "qe" "Electronic charge"
+		1.60217 66340 0⁳-19_C
+		0_C 0 }
+	{ "h" "Planck" 6.62607 015⁳-34_J·s
+		0_J·s 0 }
+	{ "ℏ" "Dirac or reduced Planck"
+		1.05457 18176 46156 39126 242⁳-34_J·s
+		0_J·s 0 }
+	{ "α" "fine-structure constant"
+		0.00729 73525 6434
+		1.14⁳-12 1.60⁳-10
+	}
+	{ "μ₀" "Vaccuum magnetic permeability"
+		0.00000 12566 37061 27_H/m
+		2.00⁳-16_H/m 1.60⁳-10
+	}
+	{ "Z₀" "Vacuum characteristic impedance"
+		376.73031 3412_Ω
+		0.00000 00600_Ω 1.60⁳-10
+	}
+	{ "ε₀" "Vaccuum electric permittivity"
+		8.85418 78188 0⁳-12_F/m
+		1.40⁳-21_F/m 1.60⁳-10
+	}
+	{ "ke" "Coulomb constant"
+		8.98755 17862 0⁳9_N·m↑2/C↑2
+		1.40_N·m↑2/C↑2
+		1.60⁳-10 }
+	{ "NA" "Avogadro's number"
+		6.02214 076⁳23_mol⁻¹
+		0_mol⁻¹ 0 }
+	{ "k" "Boltzmann" 1.38064 900⁳-23_J/K
+		0_J/K 0 }
+	{ "R" "Universal gas constant"
+		8.31446 26181 5324_J/(mol·K)
+		0_J/(mol·K) 0 }
+	{ "σ" "Stefan-Boltzmann"
+		0.00000 00567 03744 19184 42986 40652 0_W/(m↑2·K↑4)
+		0_W/(m↑2·K↑4) 0
+	}
+	{ "StdT" "Standard temperature"
+		273.150_K 0_K 0 }
+	{ "StdP" "Standard pressure"
+		101.325_kPa 0_kPa 0
+	}
+	{ "Vm" "Molar volume"
+		0.02241 39695 45014 13773 50110_m↑3/mol
+		0_m↑3/mol 0 }
+	{ "n0" "Loschmidt constant"
+		2.68678 01117 98443 82244 816⁳25_(m↑3)⁻¹
+		0_(m↑3)⁻¹ 0 }
+	{ "kq" "kq ratio" 0.00008 61733 32621 45177 43366 365_J/(K·C)
+		0_J/(K·C) 0 }
+	{ "R∞" "Rydberg" 10 973 731.56815 70_m⁻¹
+		0.00001 20_m⁻¹
+		1.10⁳-12 }
+	{ "me" "Electron mass"
+		9.10938 37139 0⁳-31_kg
+		2.80⁳-40_kg 3.10⁳-10
+	}
+	{ "mn" "Neutron mass"
+		1.67492 75005 6⁳-27_kg
+		8.50⁳-37_kg 5.10⁳-10
+	}
+	{ "mp" "Proton mass"
+		1.67262 19259 5⁳-27_kg
+		5.20⁳-37_kg 3.10⁳-10
+	}
+	{ "mH" "Hydrogen mass"
+		1.00782 50322 3_u
+		9.00⁳-11_u 8.90⁳-11
+	}
+	{ "mD" "Deuterium mass"
+		2.01410 17781 2_u
+		1.20⁳-10_u 6.00⁳-11
+	}
+	{ "mT" "Tritium mass"
+		3.01604 92779 0_u
+		0.00000 00024 0_u
+		8.00⁳-10 }
+	{ "mHe" "Helium atomic mass"
+		4.00260 32541 3_u
+		6.00⁳-11_u 1.50⁳-11
+	}
+	{ "mμ" "Muon mass" 0.11342 89257 00_u
+		0.00000 00025 0_u
+		0.00000 00220 }
+	{ "mτ" "Tau mass" 1.90754_u
+		0.00013 0_u 0.00006 80
+	}
+	{ "mpme" "mpme ratio"
+		1 836.15267 34260 0
+		0.00000 00320 1.70⁳-11
+	}
+	{ "Are" "Electron relative atomic mass"
+		0.00054 85799 09044 100
+		9.70⁳-15 1.80⁳-11
+	}
+	{ "u" "Mass unit (u)"
+		1.66053 90689 2⁳-27_kg
+		5.10⁳-37_kg 3.10⁳-10
+	}
+	{ "Mu" "Molar Mass Constant"
+		1.00000 00010 5_g/mol
+		3.10⁳-10_g/mol 3.10⁳-10
+	}
+	{ "MC12" "C12 Molar Mass"
+		12.00000 00126_g/mol
+		0.00000 00037 0_g/mol
+		3.10⁳-10 }
+	{ "SoR" "Sakur-Tetrode constant"
+		-1.16487 05214 9
+		4.70⁳-10 4.00⁳-10
+	}
+	{ "Da" "Mass unit (Dalton)"
+		1.66053 90689 2⁳-27_kg
+		5.10⁳-37_kg 3.10⁳-10
+	}
+	{ "λ0" "Photon wavelength"
+		1 239.84198 43320 02622 37750_nm
+		0_nm 0 }
+	{ "f0" "Photon frequency"
+		2.41798 92420 84918 16223 830⁳14_Hz
+		0_Hz 0 }
+	{ "ge" "Electron g-factor"
+		-2.00231 93043 6092
+		3.60⁳-13 1.80⁳-13
+	}
+	{ "qme" "qme ratio" 1.75882 00083 8⁳11_C/kg
+		55.0_C/kg 3.10⁳-10
+	}
+	{ "μe" "Electron magnetic moment"
+		-9.28476 46917 0⁳-24_J/T
+		2.90⁳-33_J/T 3.10⁳-10
+	}
+	{ "μp" "Proton magnetic moment"
+		1.41060 67954 5⁳-26_J/T
+		6.00⁳-36_J/T 4.30⁳-10
+	}
+	{ "μn" "Neutron magnetic moment"
+		-9.66236 530⁳-27_J/T
+		2.30⁳-33_J/T 0.00000 0240
+	}
+	{ "μμ" "Muon magnetic moment"
+		-4.49044 830⁳-26_J/T
+		1.00⁳-33_J/T 0.00000 00220
+	}
+	{ "a0" "Bohr radius"
+		0.05291 77210 544_nm
+		8.30⁳-12_nm 1.60⁳-10
+	}
+	{ "re" "Classical electron radius"
+		2.81794 03205 0_fm
+		0.00000 00013 0_fm
+		4.70⁳-10 }
+	{ "rp" "Proton charge radius"
+		8.40750⁳-16_m 6.40⁳-19_m
+		0.00076 0 }
+	{ "σe" "Thomson cross-section"
+		6.65245 87052 0⁳-29_m↑2
+		6.30⁳-38_m↑2 9.40⁳-10
+	}
+	{ "λc" "Electron Compton wavelength"
+		0.00242 63102 3538_nm
+		7.50⁳-13_nm 3.10⁳-10
+	}
+	{ "λcp" "Proton Compton wavelength"
+		0.00000 13214 09853 60_nm
+		4.10⁳-16_nm 3.10⁳-10
+	}
+	{ "λcn" "Neutron Compton wavelength"
+		0.00000 13195 90903 82_nm
+		6.70⁳-16_nm 5.10⁳-10
+	}
+	{ "λcμ" "Muon Compton wavelength"
+		0.00001 17344 41110 0_nm
+		2.60⁳-13_nm 0.00000 00220
+	}
+	{ "λcτ" "Tau Compton wavelength"
+		0.00000 06977 70500_nm
+		4.70⁳-11_nm 0.00006 80
+	}
+	{ "ΔfCs" "Cs hyperfine transition"
+		9 192 631 770_Hz
+		0_Hz 0 }
+	{ "θw" "Weak mixing angle"
+		28.1830_° 0.0160_°
+		0.00057 0 }
+	{ "Lpl" "Planck length"
+		1.61625 500⁳-35_m
+		1.80⁳-40_m 0.00001 10
+	}
+	{ "Tpl" "Planck time"
+		5.39124 600⁳-44_s
+		5.90⁳-49_s 0.00001 10
+	}
+	{ "Mpl" "Planck mass"
+		0.00000 00217 64340 0_kg
+		2.40⁳-13_kg 0.00001 10
+	}
+	{ "Epl" "Planck energy"
+		1.22089⁳19_GeV 1.40⁳14_GeV
+		0.00001 10 }
+	{ "T°pl" "Planck temperature"
+		1.41678 400⁳32_K
+		1.60⁳27_K 0.00001 10
+	}
+	{ "Eh" "Hartree energy"
+		4.35974 47222 0600⁳-18_J
+		4.80⁳-30_J 1.10⁳-12
+	}
+	{ "μB" "Bohr magneton"
+		9.27401 00657 0⁳-24_J/T
+		2.90⁳-33_J/T 3.10⁳-10
+	}
+	{ "μN" "Nuclear magneton"
+		5.05078 37393 0⁳-27_J/T
+		1.60⁳-36_J/T 3.10⁳-10
+	}
+	{ "γe" "Electron gyromagnetic ratio"
+		1.76085 96278 3⁳11_(s·T)⁻¹
+		55.0_(s·T)⁻¹ 3.10⁳-10
+	}
+	{ "γp" "Proton gyromagnetic ratio"
+		267 522 187.080_(s·T)⁻¹
+		0.120_(s·T)⁻¹ 4.30⁳-10
+	}
+	{ "γn" "Neutron gyromagnetic ratio"
+		183 247 175._(s·T)⁻¹
+		44.0_(s·T)⁻¹ 0.00000 0240
+	}
+	{ "Rk" "von Klitzing constant"
+		25 812.80745 93045 06660 0450_Ω
+		0_Ω 0 }
+	{ "F" "Faraday constant"
+		96 485.33212 33100 184_C/mol
+		0_C/mol 0 }
+	{ "G0" "Conductance quantum"
+		0.00007 74809 17298 63650 64668 130_S
+		0_S 0 }
+	{ "G0F" "Fermi reduced coupling constant"
+		0.00001 16637 870_(GeV↑2)⁻¹
+		6.00⁳-12_(GeV↑2)⁻¹
+		0.00000 0510 }
+	{ "c1" "First radiation constant"
+		3.74177 18521 92757 74075 380⁳-16_W·m↑2
+		0_W·m↑2 0 }
+	{ "c2" "Second radiation constant"
+		0.01438 77687 75039 33802 14667_m·K
+		0_m·K 0 }
+	{ "c3" "Wien's constant"
+		2.89777 19551 85172 66147 86054 48092 88500_mm·K
+		0_mm·K 0 }
+	{ "c3f" "Wien's frequency constant"
+		0.05878 92575 76468 24946 60613 07953 09722 00_THz/K
+		0_THz/K 0 }
+	{ "ø" "Magnetic flux quantum"
+		2.06783 38484 61929 32308 100⁳-15_Wb
+		0_Wb 0 }
+	{ "KJ" "Josephson constant"
+		4.83597 84841 69836 32447 660⁳14_Hz/V
+		0_Hz/V 0 }
+	{ "Kc" "Quantum of circulation"
+		0.00036 36947 54670_m↑2/s
+		1.10⁳-13_m↑2/s 3.10⁳-10
+	}
+	{ "ε₀q" "ε₀q ratio"
+		55 263 493.6180_F/(m·C)
+		0.00880_F/(m·C) 1.60⁳-10
+	}
+	{ "qε₀" "qε₀ product"
+		1.41859 72836 3⁳-30_F·C/m
+		2.30⁳-40_F·C/m 1.60⁳-10
+	}
+	{ "εsi" "Dielectric constant"
+		11.9 0 0 }
+	{ "εox" "SiO2 dielectric constant"
+		3.90 0 0 }
+	{ "I₀" "Ref intensity"
+		1.00⁳-12_W/m↑2 0_W/m↑2
+		0 }
+	{ "No" "Negative" False
+		0 0 }
+	{ "Yes" "Affirmative"
+		True 0 0 }
+	{ "UnixEpoch" "Unix timestamp 0"
+		19 700 101_date
+		0_date 0 }
+	{ "SinclairZX81RAM" "The amount of RAM of the Sinclair ZX81 computer"
+		1_KiB 0_KiB 0 }
+	{ "PageSize" "The (often used) size of a memory page"
+		4_KiB 0_KiB 0 }
+	{ "HelloWorld" "Output of your first program"
+		"Hello World" 0 0 }
+}

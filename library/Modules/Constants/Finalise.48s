@@ -1,0 +1,28 @@
+«
+
+
+ModulePath "Constant.db" +  Recall
+'ConstantDatabase' Store
+
+ModulePath "Section.db" +  Recall
+'ConstantSectionDatabase' Store
+
+ModulePath "Menu.db" +  Recall
+'ConstantMenuDatabase' Store
+
+
+@@ Bind to the leftShift I (CONST) key ... in User mode (leftShift 2 (USER) key). 
+«
+	"ConstantMenu"
+	ConstantSubMenuActivate
+»
+33.2 AssignKey
+
+
+@@ Cleanup Initialise stuff.
+{ ModuleName ModulePath ModulePartsList LoadModulePart LoadModulePartList } 
+Purge
+
+
+»
+

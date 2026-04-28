@@ -1,0 +1,169 @@
+«
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ Commands to define constants and store them in the database.
+
+«
+@@ Add a constant type "Basic = Without uncertainty, without unit" to the database.
+@@ The Value is expected to have no unit.
+@@ Both the Standard and Relative Uncertainty are taken to be 0.
+@@ (<name> <description> <value> -- )
+
+	@ Push uncertainties.
+	0 0
+
+	@ Create Constant object.
+	5 ToList
+
+	ConstantAddToDatabase
+»
+ConstantBasicDefinition Store
+
+«
+@@ Add a constant type "Exact definition" to the database.
+@@ The Value is expected to have a unit.
+@@ Both the Standard and Relative Uncertainty are taken to be 0.
+@@ The Standard Uncertainty will get the unit of the Value.
+@@ (<name> <description> <value> -- )
+
+     	→ value
+	«
+		@ Push the value.
+		value
+
+		@ Push 0 StandardUncertainty with the unit of the value.
+		0 value ToUnit
+
+		@ Push 0 RelativeUncertainty.
+		0
+
+		@ Create Constant object.
+		5 ToList
+
+		ConstantAddToDatabase
+	»
+»
+ConstantExactDefinition Store
+
+'ConstantExactDefinition'
+ConstantDefinitionConvention Store
+'ConstantExactDefinition'
+ConstantTheoryApproximation Store
+
+
+«
+@@ Add a constant type "Exact calculation" to the database.
+@@ The Value is expected to have a unit.
+@@ The desired unit is to be provided as a separate argument.
+@@ Both the Standard and Relative Uncertainty are taken to be 0.
+@@ The Value and Standard Uncertainty will get the desired unit.
+@@ (<name> <description> <value> <unit> -- )
+
+     	→ value unit
+	«
+		@ Push the value with the unit
+		value unit Convert
+
+		@ Push 0 StandardUncertainty with the unit.
+		0 unit ToUnit
+
+		@ Push 0 RelativeUncertainty.
+		0
+
+		@ Create Constant object.
+		5 ToList
+
+		ConstantAddToDatabase
+	»
+»
+ConstantExactCalculation Store
+
+'ConstantExactCalculation'
+ConstantCalculationConvention Store
+
+«
+@@ Add a constant type "Measurement" to the database.
+@@ The Value and the Standard Uncertainty are expected the have the same unit.
+@@ From those the Relative Uncertainty is calculated and properly rounded.
+@@ (<name> <description> <value> <StandardUncertainty> -- )
+
+     	→ value sUncertainty
+	«
+		@ Push the value, with or without a unit
+		value
+
+		@ Push the StandardUncertainty, with or without a unit
+		sUncertainty
+
+		@ Push the RelativeUncertainty.
+		sUncertainty value abs /  -2 Round
+
+		@ Create Constant object.
+		5 ToList
+
+		ConstantAddToDatabase
+	»
+»
+ConstantMeasurement Store
+
+
+«
+@@ Add a constant type "Calculated from measurement" to the database.
+@@ The Value is expected to have a unit.
+@@ The desired unit is to be provided as a separate argument.
+@@ If TypeName unit != "unit" no conversion is done.
+@@ The Standard Uncertainty is calculated and properly rounded.
+@@ (<name> <description> <value> <relative uncertainty> <unit> -- )
+
+        → value rUncertainty unit
+        «
+                @ Calculate the Value with the proper rounding and unit.
+
+                @ Cast to the desired units.
+                value
+
+		If
+			unit TypeName "unit" =
+		Then
+			unit Convert
+		End
+
+                @ Determine the rounding.
+                value rUncertainty Multiply Exponent
+                value Exponent
+                Subtract 2 Subtract
+
+                @ Finish the value.
+                Round
+                ToDecimal
+
+                @ Calculate the StandardUncertainty with the proper rounding and unit.
+                Duplicate abs  rUncertainty  Multiply
+
+		If
+			unit TypeName "unit" =
+		Then
+			BaseUnits
+			-2 round
+			unit Convert
+		End
+
+		-2 Round
+                ToDecimal
+
+                @ Push the RelativeUncertainty.
+		@ Force rounding.
+                rUncertainty
+		-2 round
+
+                @ Create Constant object.
+                5 ToList
+
+                ConstantAddToDatabase
+        »
+»
+ConstantCalculationFromMeasurement Store
+
+
+»

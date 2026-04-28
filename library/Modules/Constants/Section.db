@@ -1,0 +1,117 @@
+{
+	{
+		"Chemistry"
+		{ "NA" "k" "Vm" "R" "σ" "StdT" "StdP" "Mu" "MC12" "n0" "SoR" "Da" "kq" }
+	}
+
+	{
+		"Computing"
+		{ "No" "Yes" "UnixEpoch" "SinclairZX81RAM" "PageSize" "HelloWorld" } 
+	}
+
+	{
+		"Electromagnetism"
+		{ "qe" "λ0" "f0" "ge" "qme" "μe" "μp" "μn" "μμ" }
+	}
+	
+	{
+		"Magnetism"
+		{ "μB" "μN" "γe" "γn" "R∞" "Rk" "F" "G0" "G0F" "c1" "c2" "c3" "c3f" "ø" "KJ" "Kc" }
+	}
+	
+	{
+		"Mass"
+		{ "me" "mn" "mp" "mH" "u" "mD" "mT" "mHe" "mμ" "mτ" "mpme" "Are" }
+	}
+
+	{
+		"Materials"
+		{ "ε₀q" "qε₀" "εsi" "εox" "I₀" }
+	}	
+
+	{
+		"Mathematics"
+		{ "π" "e" "ⅈ" "∞" "?" "ⅉ" "rad" "twoπ" "angl" "−∞" }
+	}
+
+	{
+		"Physics"
+		{ "ⅉ" "c" "G" "g" "Z₀" "ε₀" "μ₀" "ke" }
+	}
+
+	{
+		"Quantum"
+		{ "h" "ℏ" "α" "ΔfCs" "θw" "Lpl" "Tpl" "Mpl" "Epl" "T°pl" "Eh"}
+	}
+
+	{
+		"Scattering"
+		{ "λc" "λcp" "λcn" "λcμ" "λcτ" }
+	}
+
+	{
+		"Size"
+		{ "re" "rp" "a0" "σe" }
+	}
+
+	{
+		"Black Star"
+		{}
+	}
+
+	{
+		"Earth"
+		{}
+	}
+
+	{
+		"Jupiter"
+		{}
+	}
+
+	{
+		"Mars"
+		{}
+	}
+
+	{
+		"Mercury"
+		{}
+	}
+
+	{
+		"Neptune"
+		{}
+	}
+
+	{
+		"Pluto"
+		{}
+	}
+
+	{
+		"Saturn"
+		{}
+	}
+
+	{
+		"Sun"
+		{}
+	}
+
+	{
+		"Uranus"
+		{}
+	}
+
+	{
+		"Venus"
+		{}
+	}
+
+}
+
+@@ The Section database is list of 1 or more Sections.
+@@ Each Section is a list.
+@@ Its Head is the Section name.
+@@ Its Tail is a list of 0 or more Constant names.
