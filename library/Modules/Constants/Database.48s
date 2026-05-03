@@ -35,7 +35,7 @@ ConstantAddToDatabase Store
 	ConstantDatabase
 	@ Construct: « Head <name> = ».
 	{ Head } Rot Add { = } Add ToProgram
-	ConstantFilter @ Issue 1648 
+	Filter
 
 	@ Check for empty result.
 	Duplicate Size

@@ -120,7 +120,9 @@ ConstantExactDefinition
 6.62607015E-34_J*s
 ConstantExactDefinition
 
-@ Description adjusted.
+@@ Description adjusted.
+@@ It is not an "Exact definition" but an "Exact Calculation".
+
 "ℏ" "Dirac or reduced Planck"
 "h" ConstantRetrieveValue  2 "π" ConstantRetrieveValue *  /
 1_J*s
@@ -662,8 +664,8 @@ ConstantDatabase
 	ConstantMeasurement
 	ConstantCalculationFromMeasurement
 }
-@Purge
-Drop
+Purge
+
 
 @@ Cleanup aliases.
 {
@@ -671,7 +673,7 @@ Drop
 	sU
 	rU
 }
-@Purge
-Drop
+Purge
+
 
 »

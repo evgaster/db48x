@@ -80,11 +80,11 @@ ConstantRetrieveAllinformation Store
 
 ConstantDatabase
 « Head »
-ConstantMap
+Map
 « ConstantTestOne »
-ConstantMap
+Map
 « "incorrect" TextContains »
-ConstantFilter
+Filter
 
 
 »

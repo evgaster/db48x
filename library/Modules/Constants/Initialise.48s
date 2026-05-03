@@ -14,7 +14,7 @@ ModuleName Store
 ModulePath Store
 
 @@ Which parts should be loaded and in which order.
-{ "Workaround" "GenericFunctions" "Database" }
+{ "GenericFunctions" "Database" }
 { "Menu" } +
 { "Finalise"} +
 ModulePartsList Store

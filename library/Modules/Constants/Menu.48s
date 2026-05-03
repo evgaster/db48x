@@ -94,7 +94,7 @@ ConstantRetrieveMenuActivate Store
 	«
 		ConstantMenuDatabase
 		{ Head } name + { = } +  ToProgram
-		ConstantFilter  @ Issue 1648
+		Filter
 
 		Size 0 =
 	»
@@ -129,7 +129,7 @@ ConstantIsMenuLeafNode Store
 			2 Tolist
 		»
 	»
-	ConstantMap  @ Issue 1648
+	Map
 
 	ConstantNavigateMenuDefault
 	Swap +
@@ -144,7 +144,7 @@ ConstantNavigateMenuGenerate Store
 	«
 		ConstantMenuDatabase
 		{ Head } MenuTreeName + { = } +  ToProgram
-		ConstantFilter  @ Issue 1648
+		Filter
 	»
 	Head Tail
 
@@ -169,7 +169,7 @@ ConstantSubMenuActivate Store
 		2 ToList
 		@ (... -- { <name> « <name> ConstantRetrieveMenuActivate » } )
 	»
-	ConstantMap @ Issue 1648
+	Map
 
 	ConstantSelectMenuDefault
 	Swap +
@@ -184,7 +184,7 @@ ConstantSelectMenuGenerate Store
 	«
 		ConstantSectionDatabase
 		{ Head } sectionName + { = } +  ToProgram
-		ConstantFilter  @ Issue 1648
+		Filter
 	»
 
 	@ ( { { SectionName { ConstantName+ } }+ } -- { ConstantName+ } )
@@ -212,7 +212,7 @@ ConstantSectionMenuActivate Store
 		@ Get the attribute. Check if the search string is contained in it.
 		attribute { Get } +  whatToSearchFor +  { TextContains } +  ToProgram
 		
-		ConstantFilter  @ Issue 1648
+		Filter
 	»
 »
 ConstantDatabaseFilterByAttribute Store
@@ -232,7 +232,7 @@ ConstantDatabaseFilterByDescription Store
 @@ ( filteredDatabase -- )
 «
 	« Head »
-	ConstantMap @ Issue 1648
+	Map
 
 	@ Check for empty result.
         If
