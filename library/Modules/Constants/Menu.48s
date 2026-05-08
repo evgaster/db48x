@@ -51,7 +51,7 @@ ConstantRetrieveMenu Store
 @@ Shared for all 3 types of menus.
 @@ ( menu -- )
 «
-	Menu
+	TemporaryMenu
 »
 ConstantMenuActivate Store
 
@@ -103,31 +103,24 @@ ConstantIsMenuLeafNode Store
 
 
 @@ Generate a navigate menu.
-@@ ((sub)Menu(Tree) -- menu)
+@@ ( <list of Section / subMenu names> -- menu )
 «
-	@@ (node -- { MenuLabel « Object Action » } )
+	@@ (node -- { MenuLabel « Section / subMenu Action » } )
 	«
-		→ node
-		«
-			@@ ( -- MenuLabel )
-			node
-			@@ ( MenuLabel -- MenuLabel Section / subMenu )
-			node
+			@@ ( node -- node Section / subMenu )
+			Duplicate
 
-			@@ ( ... -- { Action } )
+			@@ ( Section / subMenu -- Section / subMenu { Action } )
 			If
-				node ConstantIsMenuLeafNode
+				Duplicate ConstantIsMenuLeafNode
 			Then
 				{ ConstantSectionMenuActivate } 
 			Else
 				{ ConstantSubMenuActivate } 
 			End
 
-			@@ ( ... Section / subMenu { Action } --  « Section / subMenu Action ») 
 			+  ToProgram
-			@@ ( MenuLabel « Section / subMenu Action » -- { MenuLabel « Section / subMenu Action » } )
 			2 Tolist
-		»
 	»
 	Map
 
@@ -160,14 +153,12 @@ ConstantSubMenuActivate Store
 @@ Generate a constant select menu.
 @@ ( <list of constant Name(s)> -- menu )
 «
+	@@ ( name -- { name « name ConstantRetrieveMenuActivate » } )
 	«
-		@ (<name> -- ... )
-		
-		@ Construct: « <name> ConstantRetrieveMenuActivate ».
-		{} Over +  { ConstantRetrieveMenuActivate } +  ToProgram
-		
+		Duplicate
+		{ ConstantRetrieveMenuActivate }
+		+  ToProgram
 		2 ToList
-		@ (... -- { <name> « <name> ConstantRetrieveMenuActivate » } )
 	»
 	Map
 
@@ -186,9 +177,7 @@ ConstantSelectMenuGenerate Store
 		{ Head } sectionName + { = } +  ToProgram
 		Filter
 	»
-
-	@ ( { { SectionName { ConstantName+ } }+ } -- { ConstantName+ } )
-	{ 1 2 } Get
+	Head Tail
 
 	ConstantSelectMenuGenerate
 	'ConstantSelectMenu' Store

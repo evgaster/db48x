@@ -1,5 +1,4 @@
 {
-
 	{
 		"ConstantMenu"
 			"Astronomy"
@@ -15,7 +14,6 @@
 			"Scattering"
 			"Size"
 	}
-
 	{
 		"Astronomy"
 			"Black Star"
@@ -32,7 +30,7 @@
 	}
 }
 
-@@ The Menu database is a list of Nodes.
+@@ The Menu database is a list of 1 or more Nodes.
 @@ A Node is a list.
 @@ Its Head is its name.
 @@ Its Tail is an enumeration of the names of its subNodes or leaves.

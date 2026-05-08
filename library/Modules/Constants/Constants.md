@@ -1,6 +1,6 @@
 # Introduction
 
-This is a  brief preliminary description of the Constants module,
+This is a brief preliminary description of the Constants module,
 a (partial) implementation of the constants functionality in rpl.
 Beware that things may change.
 
@@ -17,8 +17,8 @@ In it, the module Constants should be added:
 # Activation
 
 To load and initialise the Module Constants:
-- 🟦 VAR (H = LIB) or the ```Library``` command,
-- 🟨 F2 ( = `Modules`),
+- 🟦 VAR (H = `LIB`) or the ```Library``` command,
+- ... F... ( = `Modules`),
 - F1 ( = `Constants`),
 
 The above reads and evaluates `Initialise.48s`.
