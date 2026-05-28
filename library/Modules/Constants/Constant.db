@@ -152,10 +152,10 @@
 		1.66053 90689 2⁳-27_kg
 		5.10⁳-37_kg 3.10⁳-10
 	}
-	{ "λ0" "Photon wavelength"
+	{ "λ₀" "Photon wavelength"
 		1 239.84198 43320 02622 37750_nm
 		0_nm 0 }
-	{ "f0" "Photon frequency"
+	{ "f₀" "Photon frequency"
 		2.41798 92420 84918 16223 830⁳14_Hz
 		0_Hz 0 }
 	{ "ge" "Electron g-factor"

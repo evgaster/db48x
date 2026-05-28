@@ -10,7 +10,7 @@
 @@ See: https://stackoverflow.com/questions/16122481/java-implement-string-method-contains-without-built-in-method-contains
 @@ Changes due to indexing from 1 in stead of 0.
 «
-	@ Initialise result and substring index j.
+	@@ Initialise result and substring index j.
 	False  1
 	
      	→ fullstring substring result j
@@ -18,24 +18,24 @@
 		1  fullstring size
 		For i
 			If
-				@ Do the fullstring and susbstring match on this position?
+				@@ Do the fullstring and susbstring match on this position?
 				fullstring i Get  substring j Get  =
 			Then
-				@ Match!
-				@ Move forward in the substring.
-				@ Move forward in the fullstring, by the Next command.
+				@@ Match!
+				@@ Move forward in the substring.
+				@@ Move forward in the fullstring, by the Next command.
 				j  1 +  'j' Store
 			Else
-				@ No match!
-				@ Reset the substring index.
+				@@ No match!
+				@@ Reset the substring index.
 				1 'j' Store
 			End
 
 			If
-				@ Does the substring fully match the fullstring?
+				@@ Does the substring fully match the fullstring?
 				j  substring size 1 +  =
 			Then
-				@ Cause a break out of the loop.
+				@@ Cause a break out of the loop.
 				True 'result' Store
 				fullstring size  'i' Store
 			End
@@ -45,34 +45,5 @@
 	»
 »
 TextContains Store
-
-
-@@ Does the Database contain a tuple with the Key?
-@@ Both the Database and the Key should not be empty.
-@@ (database key -- True/False)
-@@
-@@ A Database is a List of Tuples.
-@@ A Tuple is a List with a Key and Value.
-«
-	@ Initialise result.
-	False
-	
-     	→ database key result
-	«
-		1  database size
-		For i
-			If
-				database i Get Head  key =
-			Then
-				@ Cause a break out of the loop.
-				True  'result' Store
-				database size  'i' Store
-			End
-		Next
-
-		result
-	»
-»
-DatabaseContains Store
 
 »

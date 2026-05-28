@@ -1,6 +1,6 @@
 «
 
-@ Create and enter the workspace.
+@@ Create and enter the workspace.
 ModuleConstant
 Duplicate CreateDirectory
 Evaluate

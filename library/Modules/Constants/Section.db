@@ -9,7 +9,7 @@
 	}
 	{
 		"Electromagnetism"
-		"qe" "λ0" "f0" "ge" "qme" "μe" "μp" "μn" "μμ"
+		"qe" "λ₀" "f₀" "ge" "qme" "μe" "μp" "μn" "μμ"
 	}
 	{
 		"Magnetism"

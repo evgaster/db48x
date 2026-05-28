@@ -37,6 +37,9 @@
 	"Recursion", "="
 	"UnitsBenchmark", "="
 
+"Examples"
+        "InteractiveMenu", "="
+
 "Configs"
 
 	"Cst",		"=/config/constants.csv"
@@ -46,3 +49,4 @@
 
 "Modules"
 	"Constants",	"=/library/Modules/Constants/Initialise.48s"
+	"Test",		"=/library/Modules/Constants/Test.48s"

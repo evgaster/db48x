@@ -335,12 +335,12 @@ ConstantCalculationFromMeasurement
 @@ "qe" moved up.
 
 
-"λ0" "Photon wavelength"
+"λ₀" "Photon wavelength"
 "h" V  "c" V *  "qe" V /  1_V /
 1_nm
 ConstantExactCalculation
 
-"f0" "Photon frequency"
+"f₀" "Photon frequency"
 "c" V  "λ0" V /
 1_Hz
 ConstantExactCalculation
