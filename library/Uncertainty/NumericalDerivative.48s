@@ -1,0 +1,75 @@
+@@ Calculate the "numerical derivative".
+@@ ( function { x v } -- df/dx_approximation )
+@@
+@@ The { x v } parameter is a list of a single function parameter with its value.
+@@ 
+@@ See: https://en.wikipedia.org/wiki/Numerical_differentiation: five point midpoint approximation.
+@@ The differentation approximation parameter h is not an absolute small value but h = x * d.
+@@ Where d is a small value.
+@@
+@@ Note that we do not evaluate for x = v. v is not used at all.
+@@ The calling command gets an expression back, that still needs to be evaluated.
+@@ In that sense this derivative is not a completely numerical approximation.
+@@ It is an algebraic approximation.
+@@
+@@ Example:
+@@
+@@ 'tgamma(x²)'
+@@ { x 1 }
+@@ NumericalDerivative
+@@
+@@ Expect: '((Gamma((X·1.00000 0001)²)-Gamma((X·0.99999 9999)²))·8+(Gamma((X·0.99999 9998)²)-Gamma((X·1.00000 0002)²)))÷(12·(X·0.00000 0001))'
+«
+	@@ Extra local variable(s).
+	@@ ( -- d emptyProgram)
+	1.0e-9
+	« »
+
+	→ f xv d generateOnePoint
+	«
+		@@ Generate one point.
+		@@ ( w -- f((x * (1 + w * d))) )
+		@@
+		@@ In f(x) replace x with (x * (1 + w * d)). 
+		«
+			→ w
+			«
+				@@ ( -- f(x) )
+				f
+				@@ ( f(x) -- f(x) { x v } valuePosition )
+				xv 2
+				@@ ( ... -- x )
+				xv 1 Get
+				@@ ( x -- 'x * (1 + w * d)' )
+				1 w d * + *
+				@@ ( { x v } valuePostion 'x * (1 + w * d)' ) -- { x 'x * (1 + w * d)' } )
+				Put
+				@@ ( f(x) -- f((x * (1 + w * d))) )
+				Where
+			»
+		»
+		'generateOnePoint' Store
+
+		@@ -f(x+2h) + 8 * f(x+h) -8 * f(x-h) + f(x-2h) =
+		@@ (f(x+h) - f(x-h)) * 8 + (f(x-2h) - f(x+2h))
+		+1 generateOnePoint
+		-1 generateOnePoint
+		-
+		8 *
+		-2 generateOnePoint
+		+2 generateOnePoint
+		-
+		+
+	
+		@@ Divide by 12h. Recall that h = x * d.
+		@@ Note that we are dividing by (a multiple of) x.
+		@@ That could lead to dividing by 0, when x = 0.
+		@@ But since we do not evaluate for p = x = v,
+		@@ no harm will be done here.
+		@@ It is up to the calling command to deal with x = 0.
+		12
+		@@ h = p * d
+		xv 1 Get  d * *
+		/
+	»
+»

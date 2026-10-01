@@ -1,0 +1,19 @@
+@@ Break up a range with units to its a and b value, with units.
+@@ (<a b range>_rangeUnit -- a_aUnit b_bUnit)
+«
+        @@ Preserve the rangeUnit. Later attach it to a and b.
+        @@ ( -- 1_rangeUnit <a b range>_rangeUnit )
+        1 Over →Unit Swap
+
+        @@ Remove the rangeUnit. Break up the range.
+        @@ ( -- 1_rangeUnit a b )
+        Object→ Drop Object→
+
+        @@ Attach unit to b.
+        @@ ( -- 1_rangeUnit a b_bUnit )
+        Pick3 →Unit
+        
+        @@ Attach unit to a.
+        @@ ( -- a_aUnit b_bUnit )
+        UnRot Swap →Unit Swap
+»

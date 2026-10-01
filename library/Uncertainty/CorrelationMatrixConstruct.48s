@@ -1,0 +1,25 @@
+@@ Breakout a covariance matrix to a correlation matrix and uncertainties.
+@@ ( CV -- u R )
+@@
+@@ u is a list of uncertainties.
+@@ R is a correlation matrix.
+@@
+@@ This is the inverse of CovarianceMatrixConstruct
+«
+	→ CV
+	«
+		@@ Create u.
+		CV ⓁToDiagonal
+		SquareRoot
+
+		@@ Create uu, the outer product of u with u.
+		@@ Transform u into an (n, 1) matrix.
+		@@ ( -- u[] )
+		Duplicate FromList ToArray 1 ColumnsToMatrix
+		@@ ( u[] -- uu[ , ] )
+		Duplicate Transpose *
+
+		CV Swap
+		« ÷ » ⓁMatrixElementWiseBinaryOperation
+	»
+»

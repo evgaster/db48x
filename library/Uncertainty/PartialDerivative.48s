@@ -1,0 +1,47 @@
+@@ Calculate the partial derivative of a function: df/dx[i](v[i]).
+@@ ( function listOfParametersAndValues i -- partialDerivative )
+«
+	@@ Extra local variable(s).
+	@@ ( i -- i*2 i*2-1 )
+	2 *
+	dup 1 -
+
+	→ f pv parameterValueIndex parameterIndex 
+	«
+		@@ Prepare for later.
+		@@ ( -- { x[i] v[i] } )
+		pv  parameterIndex  Get
+		pv  parameterValueIndex  Get
+		2 ToList
+
+		@@ Keep all x[*] but x[i] constant.
+		@@ Evaluate f for all x[*] except x[i].
+		@@ ( ... -- fPartialEvaluated )
+		f
+		@@ Take x[i] out of pv, by changing it.
+		pv  parameterIndex  "~dummy~"  Put
+		@@ Substitute v[*] for x[*] except for x[i] and evaluate as far as possible.	
+		Where  Evaluate
+
+		@@ Differentiate the partial evaluated function with respect to x[i]. 
+		IfErr
+			@@ ( fPartialEvaluated -- fPartialEvaluated x[i] )
+			pv  parameterIndex  Get
+			@@ ( fPartialEvaluated x[i] -- d/dx[i]_fPartialEvaluated )
+			Derivative
+		Then
+			@@ Oops! Unknown derivative.
+			@@ ( fPartialEvaluated x[i] -- fPartialEvaluated { x[i] v[i] } ) 
+			Drop
+			Over
+			@@ ( fPartialEvaluated { x[i] v[i] } -- df/dx[i]_approximation )
+			ⓁNumericalDerivative
+		End
+
+		@@ Evaluate at x[i] = v[i].
+		@@ ( { x[i] v[i] }  df/dx[i] -- df/dx[i](x[i] = v[i]) )
+		Swap			
+		@@ Evaluate the "partial derivative" for x[i] = v[i].
+		Where  Evaluate
+	»
+»

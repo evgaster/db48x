@@ -1,0 +1,17 @@
+@@ Calculate the jacobian of a list of functions.
+@@ ( ListOfFunctions listOfParametersAndValues -- Jacobian )
+«
+	→ f pv
+	«
+		@@ For each of the functions ...
+		1  f Size
+		For i
+			f  i  Get
+			pv  ⓁGradient
+		Next
+
+		@@ Combine the gradients.
+		f Size
+		RowsToMatrix
+	»
+»

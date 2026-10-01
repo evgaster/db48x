@@ -1,0 +1,16 @@
+@@ Calculate the gradient of a function.
+@@ ( function listOfParametersAndValues -- gradient )
+«
+	→ f pv
+	«
+		@@ For each of the parameters ...
+		1  pv Size 2 /
+		For i
+			f pv i  ⓁPartialDerivative
+		Next
+
+		@@ Combine the partial derivatives.
+		pv Size 2 /
+		ToArray
+	»
+»

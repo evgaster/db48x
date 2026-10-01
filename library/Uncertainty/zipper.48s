@@ -1,0 +1,18 @@
+@@ Zip 2 lists.
+@@ ( l1 l2 -- l3 )
+@@
+@@ l3 will have the elements of l1 and l2 alternately.
+@@ Note: unlike Python zip the resulting list is flat.
+«
+	→ l1 l2
+	«
+		@@ Initialize result.
+		{}
+
+		1  l1 size
+		For i
+			l1 i get +
+			l2 i get +
+		Next
+	»
+»

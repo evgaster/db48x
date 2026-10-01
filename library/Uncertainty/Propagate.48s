@@ -1,0 +1,83 @@
+@@ Calculate the function values and a correlation matrix for:
+@@  a list of functions of
+@@  a list of parameters and values and
+@@  the correlation matrix of the parameters.
+@@
+@@ ( ListOfFunctions listOfParameters listOfValues correlationMatrix -- listOfFunctionValues correlationMatrix )
+@@
+@@ The list of functions is a list of (algebraic) expressions.
+@@  e.g. { 'a + b + c' 'a * (b + c)' }
+@@
+@@ The list of parameters is a list of symbols.
+@@  e.g. { a b c } 
+@@
+@@ The list of values is a list of uncertain numbers.
+@@  e.g. { 10±σ1 20±σ2 30±σ3 }
+@@
+@@ The order of the rows and coloms in the correlation matrix
+@@  and the order of the lists of parameters and values should match.
+@@
+@@ The correlation matrix must be completely filled,
+@@  not just the upper or lower triangle.
+@@
+@@ If the functions or/and paramter values have units,
+@@  you may get "Inconsistent units" errors.
+@@ This comes from taking the derivative
+@@  and its poor handling of unit expressions.
+@@ The PartialDerivative command catches the error and proceeds
+@@  with a algebraic approximation of the derivative.
+«
+	@@ Extra local variables
+	@@ ( ... -- v u pv )
+	{} {} {}
+
+	→ f p vu R v u pv
+	«
+		@@ Separate the values with uncertainty in value and uncertainty.
+		@@ Put the list elements, in the right order, on the stack.
+		vu ReverseList FromList
+		1 Swap
+		Start
+			If
+				Duplicate TypeName "unit" =
+			Then
+				ⓁRangeWithUnitsFrom
+			Else
+				Object→
+			End
+
+			'u' Store+
+			'v' Store+
+		Next
+
+		p v Ⓛzipper
+		'pv' Store
+
+		@@ Calculate the Jacobian for the functions at the values of the parameters.
+		f pv ⓁJacobian
+		@@ Construct the covariance matrix of the parameters.
+		u R ⓁCovarianceMatrixConstruct
+		@@ Calculate the covariance for the function values: fCV = J * CV * transpose(J).
+		Over Transpose * *
+
+		@@ Get the uncertainties for the function values and their correlation.
+		ⓁCorrelationMatrixConstruct
+		'R' Store
+		'u' Store
+
+		1  f Size
+		For i
+			@@ Evaluate the function.
+			f {} i + Get
+		    	pv Where Evaluate
+		    	@@ Get and attach its uncertainty.
+			u {} i + Get
+		    	ToUncertain
+		Next
+		f Size ToList
+
+		R
+	»
+»
+
+

@@ -1,0 +1,17 @@
+@@ Transform a list to a diagonal matrix.
+@@ ( list -- matrix )
+«
+	→ l
+	«
+		@@ Initialise the output matrix.
+		l Size  IdentityMatrix
+
+		@@ Copy each element to the corresponding diagonal position.
+		1  l Size
+		For i
+			{} i + i +
+		    	l  i  Get
+		    	Put
+		Next
+	»
+»

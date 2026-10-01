@@ -1,0 +1,24 @@
+@@ Construct a covariance matrix.
+@@ ( u R -- CV )
+@@
+@@ u is a list of uncertainties.
+@@ R is a correlation matrix.
+@@ The indexes of u and R must correspond.
+@@
+@@ CV[i, j] = uu[i, j] * R[i, j].
+@@ Where uu[i, j] = u[i] * u[j].
+«
+	→ u R
+	«
+
+		@@ Create uu, the outer product of u with u.
+		@@ Transform u into an (n, 1) matrix.
+		@@ ( -- u )
+		u FromList ToArray 1 ColumnsToMatrix
+		@@ ( u -- uu )
+		Duplicate Transpose *
+
+		R
+		« × » ⓁMatrixElementWiseBinaryOperation
+	»
+»

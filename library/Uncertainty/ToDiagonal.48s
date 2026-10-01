@@ -1,0 +1,16 @@
+@@ Transform the diagonal of a matrix to a list.
+@@ ( matrix -- list )
+«
+	→ m
+	«
+		@@ Initialise the output list.
+		{}
+
+		@@ Copy each element from the corresponding diagonal position.
+		1  m Size Head
+		For i
+			m  {} i + i + Get
+		    	+
+		Next
+	»
+»

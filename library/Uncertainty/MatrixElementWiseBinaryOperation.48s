@@ -1,0 +1,32 @@
+@@ Matrix element wise binary operation
+@@ ( A B operation -- AB )
+@@
+@@ AB[i, j] = A[i, j] operation B[i, j].
+@@
+@@ DB48X does not provide this for matrices.
+@@ It does for 1 dimensional arrays.
+«
+	→ A B operation
+	«
+		@@ Create AB.
+		A Size 0 ConstantArray
+		
+		@@ Do it row by row.
+		1  A Size Head
+		For i
+			@@ ( ... -- { i } )
+			{} i +
+			@@ Get that row from A.
+			@@ ( { i } -- { i } A[i, *] )
+			A over Get
+			@@ Get that row from B.
+			@@ ( { i } A[i, *] --  { i } A[i, *] B[i, *] )
+			B 3 Pick Get
+			@@ (  { i } A[i, *] B[i, *] --
+			operation
+			@@ Keep the result.
+			@@ ( { i } <A[i, *] B[i, *] operation> -- )
+			Put
+		Next
+	»
+»
