@@ -31,9 +31,9 @@ that does have permissions to access `.../Android/data/`.
 Even `Cx File Explorer` is restricted.
 It does show the contenct of  `.../Android/data/`.
 It does allow to navigate to and to enter `.../Android/data/org.db50x`.
-Then it can't go further as shown in the left screenshot below.
+Then it can't go further as shown in the first screenshot below.
 But it does provide a way out via `System File Manager`.
-That does give you access to  `.../Android/data/org.db50x/files/` as shown in the right screenshot below..
+That does give you access to  `.../Android/data/org.db50x/files/` as shown in the second screenshot below..
 
 <img src="images/ANDROID.md/Cx File Explorer.png" width="40%">
 <img src="images/ANDROID.md/System File Manager.png" width="40%">
@@ -56,6 +56,68 @@ From the root of the Android device, `Pixel 10` here,
 the path to the relevant files, as shown at the top, is followed.
 
 <img src="images/ANDROID.md/Dolphin.png" width="100%">
+
+
+## state or keymap files
+
+State files reside in `.../state/*.48S`, keymap files in `.../config/*.48k`.
+From the system menu you can Load, Save or Merge a state file or you can Load a keymap.
+Those operations require selecting or specifing a file through the `File selector` dialog.
+There is also some automatic under the hood handling of such files.
+
+The `File selector` has similar problems as the `Files` App (see above).
+It is not allowed to access `.../Android/data/org.db50x/files/`.
+So it can't give you the oppartunity to select files there.
+The `File selector` opens in an other location, often the `Download` location.
+
+
+### Save State
+
+The `Save State` operation from the system menu calls the `File selector`.
+It allows you to specify a name for the state file.
+The default is a_file_name with the extension 48S
+as shown in the screenshot below.
+
+<img src="images/ANDROID.md/Save_State.png" width="40%">
+
+You tap the SAVE button.
+Android then immediatly creates an empty file with that name in the current location.
+
+DB50X takes over.
+It takes the name of the specified file and saves the state,
+not in the file that Android created
+but in a file in the appropriate directory.
+A message about the used file is presented
+as shown in the screenshot below.
+
+<img src="images/ANDROID.md/Using_file.png" width="40%">
+
+
+### Load State, Merge State or Load keymap
+
+The `Load State` operation from the system menu calls the `File selector`.
+It allows you to select a file
+as shown in the screenshot below.
+
+<img src="images/ANDROID.md/Load_State.png" width="40%">
+
+Note that the a_file_name.48S shown in the above screenshot is empty.
+That doesn't matter, only its name is relevant (see below).
+
+You select the wanted file.
+
+DB50X takes over.
+It takes the name of the selected file and reads the state,
+not from the selected file
+but from a file with the same name in the appropriate directory.
+A message about the used file is presented.
+
+If you want to read a state or keymap file, you know exists,
+but for which there is no entry to select in `Download`,
+you can create one with the `Files` App.
+Try to `Merge State` Demo.48S that way.
+
+The `Merge State` and `Load keymap` operations work similar.
 
 
 # Install
